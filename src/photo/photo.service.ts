@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { PHOTO_REPOSITORY } from 'src/constants/constants';
+import { PHOTO_REPOSITORY } from 'src/constants';
 import { Repository } from 'typeorm';
 import { Photo } from './entity/photo.entity';
 
