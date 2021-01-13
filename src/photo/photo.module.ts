@@ -6,10 +6,10 @@ import { PhotoController } from './photo.controller';
 
 @Module({
     imports: [DatabaseModule],
+    controllers: [PhotoController],
     providers: [
         ...photoProviders,
         PhotoService,
     ],
-    controllers: [PhotoController]
 })
 export class PhotoModule {}

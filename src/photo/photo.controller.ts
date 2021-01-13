@@ -1,4 +1,4 @@
-import { Controller, Get, Inject } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { Photo } from './entity/photo.entity';
 import { PhotoService } from './photo.service';
 
