@@ -7,9 +7,9 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { CreateTodoDTO } from './dto/createTodo.dto';
-import { UpdateTodoDTO } from './dto/updateTodo.dto';
-import { Todo } from './entity/todo.entity';
+import { CreateTodoDTO } from './dto/create-todo.dto';
+import { UpdateTodoDTO } from './dto/update-todo.dto';
+import { Todo } from './entities/todo.entity';
 import { TodoService } from './todo.service';
 
 @Controller('todo')
