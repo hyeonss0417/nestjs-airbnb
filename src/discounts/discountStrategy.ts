@@ -1,10 +1,10 @@
 import { DiscountType } from './entities/discount.entity';
 
-export interface DiscountRule {
+export interface DiscountStrategy {
   isSatisfied: (stayDays: number) => boolean;
 }
 
-export const discountRule: Record<DiscountType, DiscountRule> = {
+export const discountStrategies: Record<DiscountType, DiscountStrategy> = {
   Week: { isSatisfied: stayDays => (stayDays >= 7 ? true : false) },
   Month: { isSatisfied: stayDays => (stayDays >= 28 ? true : false) },
   Special: { isSatisfied: _ => true },

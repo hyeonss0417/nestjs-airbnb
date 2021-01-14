@@ -1,8 +1,8 @@
-import { IsDate, IsEnum, IsInt, IsNumber } from 'class-validator';
+import { IsDate, IsEnum, IsInt } from 'class-validator';
 import { CoreEntity } from 'src/common/entities/core.entity';
 import { Room } from 'src/rooms/entities/room.entity';
-import { Column, Entity, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
-import { discountRule } from '../discountRule';
+import { Column, Entity, ManyToOne } from 'typeorm';
+import { discountStrategies } from '../discountStrategy';
 
 export enum DiscountType {
   Week = 'Week',
@@ -41,7 +41,7 @@ export class Discount extends CoreEntity {
       return result;
     }
 
-    const isSatisfied = discountRule[this.type].isSatisfied(stayDays);
+    const isSatisfied = discountStrategies[this.type].isSatisfied(stayDays);
     if (isSatisfied) result += price * (this.percent * 0.01);
 
     return result;

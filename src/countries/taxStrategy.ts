@@ -1,14 +1,14 @@
 import { Room } from 'src/rooms/entities/room.entity';
 import { CountryName } from './entities/country.entity';
 
-interface calculateTaxInterface {
+interface TaxStrategy {
   calculateTax: (
     room: Room,
     stayDays: number,
   ) => { percent: number; amount: number };
 }
 
-export const taxRules: Record<CountryName, calculateTaxInterface> = {
+export const taxStrategies: Record<CountryName, TaxStrategy> = {
   SouthKorea: {
     calculateTax: (room, stayDays) => ({ percent: 10, amount: 0 }),
   },

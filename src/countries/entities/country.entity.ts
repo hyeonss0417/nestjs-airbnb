@@ -2,7 +2,7 @@ import { IsEnum } from 'class-validator';
 import { CoreEntity } from 'src/common/entities/core.entity';
 import { Room } from 'src/rooms/entities/room.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
-import { taxRules } from '../taxRule';
+import { taxStrategies } from '../taxStrategy';
 
 export enum CountryName {
   SouthKorea = 'SouthKorea',
@@ -35,7 +35,7 @@ export class Country extends CoreEntity {
   rooms: Room[];
 
   calculateTax(room: Room, price: number, stayDays: number, guestCnt: number) {
-    const tax = taxRules[this.name].calculateTax(room, stayDays);
+    const tax = taxStrategies[this.name].calculateTax(room, stayDays);
 
     let result = price * (tax.percent * 0.01);
     result += tax.amount * guestCnt * stayDays;
