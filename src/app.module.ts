@@ -12,6 +12,8 @@ import { ConversationsModule } from './conversations/conversations.module';
 import { PriceModule } from './price/price.module';
 import { PaymentsModule } from './payments/payments.module';
 import { ListsModule } from './lists/lists.module';
+import { PhotosModule } from './photos/photos.module';
+import { PhotosModule } from './photos/photos.module';
 
 @Module({
   imports: [
@@ -26,6 +28,7 @@ import { ListsModule } from './lists/lists.module';
     PriceModule,
     PaymentsModule,
     ListsModule,
+    PhotosModule,
   ],
   controllers: [AppController],
   providers: [AppService],

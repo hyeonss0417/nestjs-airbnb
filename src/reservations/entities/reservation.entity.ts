@@ -1,7 +1,8 @@
+import { IsDate, IsEnum } from 'class-validator';
 import { CoreEntity } from 'src/common/entities/core.entity';
 import { Room } from 'src/rooms/entities/room.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne } from 'typeorm';
 
 export enum ReservationStatus {
   REQUESTED = 'REQUESTED',
@@ -20,9 +21,22 @@ export class Reservation extends CoreEntity {
   )
   room: Room;
 
-  @ManyToOne(
+  @ManyToMany(
     type => User,
     user => user.reservations,
   )
-  guest: User;
+  @JoinTable()
+  guests: User[];
+
+  @Column({ type: 'enum', enum: ReservationStatus })
+  @IsEnum(ReservationStatus)
+  status: ReservationStatus;
+
+  @Column({ type: 'date' })
+  @IsDate()
+  checkIn: Date;
+
+  @Column({ type: 'date' })
+  @IsDate()
+  checkOut: Date;
 }

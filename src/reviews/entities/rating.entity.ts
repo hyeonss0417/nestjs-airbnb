@@ -1,4 +1,4 @@
-import { IsEnum, IsNumber } from 'class-validator';
+import { IsEnum, IsInt } from 'class-validator';
 import { CoreEntity } from 'src/common/entities/core.entity';
 import { Check, Column, Entity, ManyToOne } from 'typeorm';
 import { Review } from './review.entity';
@@ -28,6 +28,6 @@ export class Rating extends CoreEntity {
   category: RatingCategory;
 
   @Column({ type: 'int' })
-  @IsNumber()
+  @IsInt()
   star: number;
 }

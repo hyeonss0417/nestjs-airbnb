@@ -54,23 +54,22 @@ export class User extends CoreEntity {
   @Column()
   avatar: string;
 
-  @ManyToMany(
+  // ===== Inverse side Relation =====
+  @OneToMany(
     type => List,
-    list => list.owners,
+    list => list.owner,
   )
-  @JoinTable()
   saveLists: List[];
 
-  // Inverse side Relation.
   @OneToMany(
     type => Room,
     room => room.host,
   )
   rooms: Room[];
 
-  @OneToMany(
+  @ManyToMany(
     type => Reservation,
-    reservation => reservation.guest,
+    reservation => reservation.guests,
   )
   reservations: Reservation[];
 
@@ -98,6 +97,7 @@ export class User extends CoreEntity {
   )
   payments: Payment[];
 
+  // ===== Security =====
   @BeforeInsert()
   @BeforeUpdate()
   async hashPassword(): Promise<void> {
@@ -111,6 +111,7 @@ export class User extends CoreEntity {
     }
   }
 
+  // ===== Methods =====
   async checkPassword(aPassword: string): Promise<boolean> {
     try {
       const ok = await bcrypt.compare(aPassword, this.password);

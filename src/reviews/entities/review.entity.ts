@@ -6,8 +6,11 @@ import { Rating } from './rating.entity';
 
 @Entity()
 export class Review extends CoreEntity {
-  @
-    guest: User;
+  @ManyToOne(
+    type => User,
+    user => user.reviews,
+  )
+  guest: User;
 
   @ManyToOne(
     type => Room,
@@ -15,6 +18,7 @@ export class Review extends CoreEntity {
   )
   room: Room;
 
+  // Inverse side Relation
   @OneToMany(
     type => Rating,
     rating => rating.review,
