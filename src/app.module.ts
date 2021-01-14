@@ -5,6 +5,13 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TodoModule } from './todo/todo.module';
 import { UsersModule } from './users/users.module';
+import { RoomsModule } from './rooms/rooms.module';
+import { ReservationsModule } from './reservations/reservations.module';
+import { ReviewsModule } from './reviews/reviews.module';
+import { ConversationsModule } from './conversations/conversations.module';
+import { PriceModule } from './price/price.module';
+import { PaymentsModule } from './payments/payments.module';
+import { ListsModule } from './lists/lists.module';
 
 @Module({
   imports: [
@@ -12,6 +19,13 @@ import { UsersModule } from './users/users.module';
     TypeOrmModule.forRoot(),
     TodoModule,
     UsersModule,
+    RoomsModule,
+    ReservationsModule,
+    ReviewsModule,
+    ConversationsModule,
+    PriceModule,
+    PaymentsModule,
+    ListsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
