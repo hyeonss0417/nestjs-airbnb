@@ -13,6 +13,9 @@ import { PriceModule } from './price/price.module';
 import { PaymentsModule } from './payments/payments.module';
 import { ListsModule } from './lists/lists.module';
 import { PhotosModule } from './photos/photos.module';
+import { DiscountsModule } from './discounts/discounts.module';
+import { CountriesModule } from './countries/countries.module';
+import { BilingModule } from './biling/biling.module';
 import { PhotosModule } from './photos/photos.module';
 
 @Module({
@@ -29,6 +32,9 @@ import { PhotosModule } from './photos/photos.module';
     PaymentsModule,
     ListsModule,
     PhotosModule,
+    BilingModule,
+    CountriesModule,
+    DiscountsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

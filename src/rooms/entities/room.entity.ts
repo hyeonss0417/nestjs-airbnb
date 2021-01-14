@@ -1,5 +1,7 @@
 import { IsEnum, IsInt, IsNumber, IsString } from 'class-validator';
 import { CoreEntity } from 'src/common/entities/core.entity';
+import { Country } from 'src/countries/entities/country.entity';
+import { Discount } from 'src/discounts/entities/discount.entity';
 import { List } from 'src/lists/entities/list.entity';
 import { Photo } from 'src/photos/entities/photo.entity';
 import { Reservation } from 'src/reservations/entities/reservation.entity';
@@ -30,6 +32,18 @@ export class Room extends CoreEntity {
   @Column({ type: 'enum', enum: RoomType })
   @IsEnum(RoomType)
   roomType: RoomType;
+
+  @Column()
+  price: number;
+
+  @ManyToMany(
+    type => Discount,
+    discount => discount.rooms,
+  )
+  discounts: Discount[];
+
+  @Column({ nullable: true })
+  cleaningFee: number;
 
   @Column({ type: 'int' })
   @IsInt()
@@ -62,9 +76,11 @@ export class Room extends CoreEntity {
   photos: Photo[];
 
   // ===== Address =====
-  @Column()
-  @IsString()
-  addressCountry: string;
+  @ManyToOne(
+    type => Country,
+    country => country.rooms,
+  )
+  addressCountry: Country;
 
   @Column()
   @IsString()
@@ -125,4 +141,8 @@ export class Room extends CoreEntity {
     list => list.rooms,
   )
   lists: List[];
+
+  calculateTotalPrice(): number {
+    return 0;
+  }
 }
