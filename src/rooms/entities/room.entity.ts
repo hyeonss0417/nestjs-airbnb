@@ -1,13 +1,23 @@
+import {
+  BadRequestException,
+  InternalServerErrorException,
+  NotAcceptableException,
+} from '@nestjs/common';
 import { IsEnum, IsInt, IsNumber, IsString } from 'class-validator';
+import { DateRange } from 'src/common/datetime.utils';
 import { CoreEntity } from 'src/common/entities/core.entity';
 import { Country } from 'src/countries/entities/country.entity';
 import { Discount } from 'src/discounts/entities/discount.entity';
 import { List } from 'src/lists/entities/list.entity';
 import { Photo } from 'src/photos/entities/photo.entity';
-import { Reservation } from 'src/reservations/entities/reservation.entity';
+import {
+  Reservation,
+  ReservationStatus,
+} from 'src/reservations/entities/reservation.entity';
 import { Review } from 'src/reviews/entities/review.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Column, Entity, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
+import { ReserveRoomDTO } from '../dto/reserve-room.dto';
 import { Amenity } from './amenity.entity';
 import { Facility } from './facility.entity';
 import { Rule } from './rule.entity';
@@ -36,7 +46,7 @@ export class Room extends CoreEntity {
   @Column()
   price: number;
 
-  @ManyToMany(
+  @OneToMany(
     type => Discount,
     discount => discount.rooms,
   )
@@ -75,13 +85,13 @@ export class Room extends CoreEntity {
   )
   photos: Photo[];
 
-  // ===== Address =====
   @ManyToOne(
     type => Country,
     country => country.rooms,
   )
-  addressCountry: Country;
+  country: Country;
 
+  // ===== Address =====
   @Column()
   @IsString()
   addressState: string;
@@ -142,7 +152,94 @@ export class Room extends CoreEntity {
   )
   lists: List[];
 
-  calculateTotalPrice(): number {
-    return 0;
+  // ===== Domain Methods =====
+  calculatePriceInDetail(
+    stayDays: number,
+    guestCnt: number,
+  ): {
+    accommodationFee: number;
+    discountFee: number;
+    cleaningFee: number;
+    serviceFee: number;
+    taxFee: number;
+    totalPrice: number;
+  } {
+    const accommodationFee = this.price * stayDays;
+    const discountFee = this.calculateDiscountFee(accommodationFee, stayDays);
+    const cleaningFee = this.cleaningFee || 0;
+
+    const priceForSeriveFee = accommodationFee - discountFee + cleaningFee;
+    const serviceFee = this.calculateCommissionFee(priceForSeriveFee);
+
+    const priceForTaxFee = priceForSeriveFee + serviceFee;
+    const taxFee = this.calculateTaxFee(priceForTaxFee, stayDays, guestCnt);
+
+    const totalPrice = priceForTaxFee + taxFee;
+    return {
+      accommodationFee,
+      discountFee,
+      cleaningFee,
+      serviceFee,
+      taxFee,
+      totalPrice,
+    };
+  }
+
+  getTotalPrice(stayDays: number, guestCnt: number): number {
+    return this.calculatePriceInDetail(stayDays, guestCnt).totalPrice;
+  }
+
+  validateReservation(reserveRoomDTO: ReserveRoomDTO): boolean {
+    if (!this.isAccommodable(reserveRoomDTO.getDateRange())) {
+      throw new BadRequestException('예약 불가능한 일정입니다.');
+    }
+
+    if (
+      this.getTotalPrice(
+        reserveRoomDTO.getDurationInDyas(),
+        reserveRoomDTO.guestCnt,
+      ) != reserveRoomDTO.price
+    ) {
+      throw new BadRequestException('가격이 변동되었습니다.');
+    }
+
+    return true;
+  }
+
+  private isAccommodable(stayRange: DateRange): boolean {
+    if (!this.reservatons) throw new InternalServerErrorException();
+    return this.reservatons
+      .filter(
+        rsv =>
+          rsv.status === ReservationStatus.REQUESTED ||
+          rsv.status === ReservationStatus.ACCEPTED,
+      )
+      .map(rsv => new DateRange(rsv.checkIn, rsv.checkOut))
+      .some(otherStayRange => otherStayRange.intersect(stayRange));
+  }
+
+  private calculateDiscountFee(price: number, stayDays: number): number {
+    if (!this.discounts) throw new InternalServerErrorException();
+    const discountFee = this.discounts.reduce(
+      (acc, discount) =>
+        Math.max(acc, discount.calculateDiscountFee(price, stayDays)),
+      0,
+    );
+    return discountFee;
+  }
+
+  private calculateCommissionFee(price: number): number {
+    // TODO: Make Billing System
+    const commissionPercent = 15;
+    return price * (commissionPercent * 0.01);
+  }
+
+  private calculateTaxFee(
+    price: number,
+    stayDays: number,
+    guestCnt: number,
+  ): number {
+    if (!this.country) throw new InternalServerErrorException();
+    return this.country.calculateTax(this, price, stayDays, guestCnt);
   }
 }

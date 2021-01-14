@@ -11,6 +11,7 @@ export enum ReservationStatus {
   FAEILED = 'FAEILED',
   CHECKEDIN = 'CHECKEDIN',
   CHECKEDOUT = 'CHECKEDOUT',
+  CANCELED = 'CANCELED',
 }
 
 @Entity()

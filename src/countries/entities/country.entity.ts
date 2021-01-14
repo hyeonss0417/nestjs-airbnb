@@ -30,14 +30,14 @@ export class Country extends CoreEntity {
 
   @OneToMany(
     type => Room,
-    room => room.addressCountry,
+    room => room.country,
   )
   rooms: Room[];
 
-  calculateTax(room: Room, price: number, guestCnt: number, stayDays: number) {
+  calculateTax(room: Room, price: number, stayDays: number, guestCnt: number) {
     const tax = taxRules[this.name].calculateTax(room, stayDays);
 
-    let result = price * tax.percent;
+    let result = price * (tax.percent * 0.01);
     result += tax.amount * guestCnt * stayDays;
     return result;
   }
