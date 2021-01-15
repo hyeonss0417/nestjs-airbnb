@@ -1,4 +1,3 @@
-import { check } from 'prettier';
 import { DateDiff, DateRange } from 'src/common/datetime.utils';
 
 export class ReserveRoomDTO {
@@ -9,12 +8,4 @@ export class ReserveRoomDTO {
   checkOut: Date;
   price: number;
   paymentId: number;
-
-  getDurationInDyas(): number {
-    return DateDiff.inDays(this.checkIn, this.checkOut);
-  }
-
-  getDateRange(): DateRange {
-    return new DateRange(this.checkIn, this.checkOut);
-  }
 }

@@ -1,8 +1,18 @@
-import { IsDate, IsEnum } from 'class-validator';
+import { InternalServerErrorException } from '@nestjs/common';
+import { IsDate, IsEnum, IsInt, IsNumber } from 'class-validator';
+import { DateDiff, DateRange } from 'src/common/datetime.utils';
 import { CoreEntity } from 'src/common/entities/core.entity';
 import { Room } from 'src/rooms/entities/room.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne } from 'typeorm';
+import {
+  Column,
+  DeepPartial,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+} from 'typeorm';
+import { CreateReservationDto } from '../dto/create-reservation.dto';
 
 export enum ReservationStatus {
   REQUESTED = 'REQUESTED',
@@ -29,7 +39,11 @@ export class Reservation extends CoreEntity {
   @JoinTable()
   guests: User[];
 
-  @Column({ type: 'enum', enum: ReservationStatus })
+  @Column({ type: 'int' })
+  @IsInt()
+  guestCnt: number;
+
+  @Column({ type: 'enum', enum: ReservationStatus, nullable: true })
   @IsEnum(ReservationStatus)
   status: ReservationStatus;
 
@@ -40,4 +54,52 @@ export class Reservation extends CoreEntity {
   @Column({ type: 'date' })
   @IsDate()
   checkOut: Date;
+
+  @Column({ type: 'int' })
+  @IsNumber()
+  price: number;
+
+  getDurationInDyas(): number {
+    return DateDiff.inDays(this.checkIn, this.checkOut);
+  }
+
+  getStayTerm(): DateRange {
+    const lastNight = new Date();
+    lastNight.setDate(this.checkOut.getDate() - 1);
+
+    return new DateRange(this.checkIn, lastNight);
+  }
+
+  isScheduled(): boolean {
+    return (
+      this.status === ReservationStatus.REQUESTED ||
+      this.status === ReservationStatus.ACCEPTED
+    );
+  }
+
+  constructor({
+    room,
+    guest,
+    guestCnt,
+    checkIn,
+    checkOut,
+    price,
+  }: IReservationConstructor) {
+    super();
+    this.room = room;
+    this.guests = [guest];
+    this.guestCnt = guestCnt;
+    this.checkIn = checkIn;
+    this.checkOut = checkOut;
+    this.price = price;
+  }
+}
+
+interface IReservationConstructor {
+  room: Room;
+  guest: User;
+  guestCnt: number;
+  checkIn: Date;
+  checkOut: Date;
+  price: number;
 }

@@ -153,28 +153,56 @@ export class Room extends CoreEntity {
   lists: List[];
 
   // ===== Domain Methods =====
-  calculatePriceInDetail(
-    stayDays: number,
-    guestCnt: number,
-  ): {
-    accommodationFee: number;
-    discountFee: number;
-    cleaningFee: number;
-    serviceFee: number;
-    taxFee: number;
-    totalPrice: number;
-  } {
+  reserve(reserveRoomDTO: ReserveRoomDTO, guest: User): Reservation {
+    const reservation = new Reservation({
+      ...reserveRoomDTO,
+      room: this,
+      guest,
+    });
+    this.validateReservation(reservation);
+    return reservation;
+  }
+
+  private validateReservation(reservation: Reservation): boolean {
+    if (!this.isAccommodable(reservation.getStayTerm())) {
+      throw new BadRequestException('예약 불가능한 일정입니다.');
+    }
+
+    const totalPrice = this.calculateTotalPrice(
+      reservation.getDurationInDyas(),
+      reservation.guestCnt,
+    );
+    if (totalPrice != reservation.price) {
+      throw new BadRequestException('가격이 변동되었습니다.');
+    }
+
+    return true;
+  }
+
+  private isAccommodable(stayTerm: DateRange): boolean {
+    if (!this.reservatons) throw new InternalServerErrorException();
+    return this.reservatons
+      .filter(reservation => reservation.isScheduled())
+      .map(reservation => reservation.getStayTerm())
+      .some(otherStayRange => otherStayRange.intersect(stayTerm));
+  }
+
+  calculateTotalPrice(stayDays: number, guestCnt: number): number {
+    return this.calculatePriceInDetail(stayDays, guestCnt).totalPrice;
+  }
+
+  calculatePriceInDetail(stayDays: number, guestCnt: number): IPriceDetail {
     const accommodationFee = this.price * stayDays;
     const discountFee = this.calculateDiscountFee(accommodationFee, stayDays);
     const cleaningFee = this.cleaningFee || 0;
 
-    const priceForSeriveFee = accommodationFee - discountFee + cleaningFee;
-    const serviceFee = this.calculateCommissionFee(priceForSeriveFee);
+    const _priceBreforSeriveFee = accommodationFee - discountFee + cleaningFee;
+    const serviceFee = this.calculateServiceFee(_priceBreforSeriveFee);
 
-    const priceForTaxFee = priceForSeriveFee + serviceFee;
-    const taxFee = this.calculateTaxFee(priceForTaxFee, stayDays, guestCnt);
+    const _priceBreforTaxFee = _priceBreforSeriveFee + serviceFee;
+    const taxFee = this.calculateTaxFee(_priceBreforTaxFee, stayDays, guestCnt);
 
-    const totalPrice = priceForTaxFee + taxFee;
+    const totalPrice = _priceBreforTaxFee + taxFee;
     return {
       accommodationFee,
       discountFee,
@@ -183,39 +211,6 @@ export class Room extends CoreEntity {
       taxFee,
       totalPrice,
     };
-  }
-
-  getTotalPrice(stayDays: number, guestCnt: number): number {
-    return this.calculatePriceInDetail(stayDays, guestCnt).totalPrice;
-  }
-
-  validateReservation(reserveRoomDTO: ReserveRoomDTO): boolean {
-    if (!this.isAccommodable(reserveRoomDTO.getDateRange())) {
-      throw new BadRequestException('예약 불가능한 일정입니다.');
-    }
-
-    if (
-      this.getTotalPrice(
-        reserveRoomDTO.getDurationInDyas(),
-        reserveRoomDTO.guestCnt,
-      ) != reserveRoomDTO.price
-    ) {
-      throw new BadRequestException('가격이 변동되었습니다.');
-    }
-
-    return true;
-  }
-
-  private isAccommodable(stayRange: DateRange): boolean {
-    if (!this.reservatons) throw new InternalServerErrorException();
-    return this.reservatons
-      .filter(
-        rsv =>
-          rsv.status === ReservationStatus.REQUESTED ||
-          rsv.status === ReservationStatus.ACCEPTED,
-      )
-      .map(rsv => new DateRange(rsv.checkIn, rsv.checkOut))
-      .some(otherStayRange => otherStayRange.intersect(stayRange));
   }
 
   private calculateDiscountFee(price: number, stayDays: number): number {
@@ -228,7 +223,7 @@ export class Room extends CoreEntity {
     return discountFee;
   }
 
-  private calculateCommissionFee(price: number): number {
+  private calculateServiceFee(price: number): number {
     // TODO: Make Billing System
     const commissionPercent = 15;
     return price * (commissionPercent * 0.01);
@@ -242,4 +237,13 @@ export class Room extends CoreEntity {
     if (!this.country) throw new InternalServerErrorException();
     return this.country.calculateTax(this, price, stayDays, guestCnt);
   }
+}
+
+interface IPriceDetail {
+  accommodationFee: number;
+  discountFee: number;
+  cleaningFee: number;
+  serviceFee: number;
+  taxFee: number;
+  totalPrice: number;
 }

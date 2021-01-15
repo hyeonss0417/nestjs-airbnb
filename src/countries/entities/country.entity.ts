@@ -37,7 +37,8 @@ export class Country extends CoreEntity {
   calculateTax(room: Room, price: number, stayDays: number, guestCnt: number) {
     const tax = taxStrategies[this.name].calculateTax(room, stayDays);
 
-    let result = price * (tax.percent * 0.01);
+    let result = 0;
+    result += price * (tax.percent * 0.01);
     result += tax.amount * guestCnt * stayDays;
     return result;
   }
