@@ -181,7 +181,7 @@ export class Room extends CoreEntity {
 
   private isAccommodable(stayTerm: DateRange): boolean {
     if (!this.reservatons) throw new InternalServerErrorException();
-    return this.reservatons
+    return !this.reservatons
       .filter(reservation => reservation.isScheduled())
       .map(reservation => reservation.getStayTerm())
       .some(otherStayRange => otherStayRange.intersect(stayTerm));
@@ -196,13 +196,13 @@ export class Room extends CoreEntity {
     const discountFee = this.calculateDiscountFee(accommodationFee, stayDays);
     const cleaningFee = this.cleaningFee || 0;
 
-    const _priceBreforSeriveFee = accommodationFee - discountFee + cleaningFee;
-    const serviceFee = this.calculateServiceFee(_priceBreforSeriveFee);
+    const serviceFee = this.calculateServiceFee(
+      accommodationFee - discountFee + cleaningFee,
+    );
+    const taxFee = this.calculateTaxFee(serviceFee, stayDays, guestCnt);
 
-    const _priceBreforTaxFee = _priceBreforSeriveFee + serviceFee;
-    const taxFee = this.calculateTaxFee(_priceBreforTaxFee, stayDays, guestCnt);
-
-    const totalPrice = _priceBreforTaxFee + taxFee;
+    const totalPrice =
+      accommodationFee - discountFee + cleaningFee + serviceFee + taxFee;
     return {
       accommodationFee,
       discountFee,
@@ -215,12 +215,9 @@ export class Room extends CoreEntity {
 
   private calculateDiscountFee(price: number, stayDays: number): number {
     if (!this.discounts) throw new InternalServerErrorException();
-    const discountFee = this.discounts.reduce(
-      (acc, discount) =>
-        Math.max(acc, discount.calculateDiscountFee(price, stayDays)),
-      0,
-    );
-    return discountFee;
+    return this.discounts
+      .map(discount => discount.calculateDiscountFee(price, stayDays))
+      .reduce((acc, cur) => Math.max(acc, cur), 0);
   }
 
   private calculateServiceFee(price: number): number {

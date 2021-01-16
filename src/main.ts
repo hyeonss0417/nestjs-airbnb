@@ -14,6 +14,8 @@ async function bootstrap() {
     }),
   );
 
+  app.enableCors();
+
   const options = new DocumentBuilder()
     .setTitle('Airbnb Backend')
     .setDescription('This is Airbnb Backend API')

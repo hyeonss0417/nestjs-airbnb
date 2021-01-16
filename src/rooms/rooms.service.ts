@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Reservation } from 'src/reservations/entities/reservation.entity';
+import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { ReserveRoomDTO } from './dto/reserve-room.dto';
@@ -36,9 +37,13 @@ export class RoomsService {
     return `This action removes a #${id} room`;
   }
 
-  async reserve(reserveRoomDTO: ReserveRoomDTO): Promise<Reservation> {
-    const room = await this.roomRepository.findOne(reserveRoomDTO.roomId);
-    const reservation = room.reserve(reserveRoomDTO, req['user']);
+  async reserve(
+    roomId: number,
+    reserveRoomDTO: ReserveRoomDTO,
+    guest: User,
+  ): Promise<Reservation> {
+    const room = await this.roomRepository.findOne(roomId);
+    const reservation = room.reserve(reserveRoomDTO, guest);
     return await this.reservationRepository.create(reservation);
   }
 }
