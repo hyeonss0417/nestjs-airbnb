@@ -9,14 +9,12 @@ import { RoomsModule } from './rooms/rooms.module';
 import { ReservationsModule } from './reservations/reservations.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { ConversationsModule } from './conversations/conversations.module';
-import { PriceModule } from './price/price.module';
 import { PaymentsModule } from './payments/payments.module';
 import { ListsModule } from './lists/lists.module';
 import { PhotosModule } from './photos/photos.module';
+import { AuthModule } from './auth/auth.module';
 import { DiscountsModule } from './discounts/discounts.module';
 import { CountriesModule } from './countries/countries.module';
-import { BilingModule } from './biling/biling.module';
-import { PhotosModule } from './photos/photos.module';
 
 @Module({
   imports: [
@@ -28,13 +26,12 @@ import { PhotosModule } from './photos/photos.module';
     ReservationsModule,
     ReviewsModule,
     ConversationsModule,
-    PriceModule,
     PaymentsModule,
     ListsModule,
     PhotosModule,
-    BilingModule,
     CountriesModule,
     DiscountsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

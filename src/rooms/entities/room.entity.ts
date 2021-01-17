@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   InternalServerErrorException,
-  NotAcceptableException,
 } from '@nestjs/common';
 import { IsEnum, IsInt, IsNumber, IsString } from 'class-validator';
 import { DateRange } from 'src/common/datetime.utils';
@@ -10,10 +9,7 @@ import { Country } from 'src/countries/entities/country.entity';
 import { Discount } from 'src/discounts/entities/discount.entity';
 import { List } from 'src/lists/entities/list.entity';
 import { Photo } from 'src/photos/entities/photo.entity';
-import {
-  Reservation,
-  ReservationStatus,
-} from 'src/reservations/entities/reservation.entity';
+import { Reservation } from 'src/reservations/entities/reservation.entity';
 import { Review } from 'src/reviews/entities/review.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Column, Entity, ManyToMany, ManyToOne, OneToMany } from 'typeorm';

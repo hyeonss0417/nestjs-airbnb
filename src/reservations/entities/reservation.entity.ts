@@ -77,21 +77,17 @@ export class Reservation extends CoreEntity {
     );
   }
 
-  constructor({
-    room,
-    guest,
-    guestCnt,
-    checkIn,
-    checkOut,
-    price,
-  }: IReservationConstructor) {
+  constructor(data?: IReservationConstructor) {
     super();
-    this.room = room;
-    this.guests = [guest];
-    this.guestCnt = guestCnt;
-    this.checkIn = checkIn;
-    this.checkOut = checkOut;
-    this.price = price;
+    if (data) {
+      const { room, guest, guestCnt, checkIn, checkOut, price } = data;
+      this.room = room;
+      this.guests = [guest];
+      this.guestCnt = guestCnt;
+      this.checkIn = checkIn;
+      this.checkOut = checkOut;
+      this.price = price;
+    }
   }
 }
 

@@ -1,4 +1,4 @@
-import { IsBoolean, IsEmail, IsString } from 'class-validator';
+import { IsBoolean, IsDate, IsEmail, IsString } from 'class-validator';
 import { CoreEntity } from 'src/common/entities/core.entity';
 import { Payment } from 'src/payments/entities/payment.entity';
 import { Reservation } from 'src/reservations/entities/reservation.entity';
@@ -8,7 +8,6 @@ import {
   BeforeUpdate,
   Column,
   Entity,
-  JoinTable,
   ManyToMany,
   OneToMany,
 } from 'typeorm';
@@ -37,7 +36,8 @@ export class User extends CoreEntity {
   @IsString()
   password: string;
 
-  @Column({ type: 'datetime' })
+  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+  @IsDate()
   lastLogin: Date;
 
   @Column({ default: false })
@@ -48,10 +48,12 @@ export class User extends CoreEntity {
   @IsBoolean()
   verified: boolean;
 
-  @Column({ length: 500 })
+  @Column({ length: 500, nullable: true })
+  @IsString()
   bio: string;
 
-  @Column()
+  @Column({ nullable: true })
+  @IsString()
   avatar: string;
 
   // ===== Inverse side Relation =====
