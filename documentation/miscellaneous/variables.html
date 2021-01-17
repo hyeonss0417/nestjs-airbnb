@@ -67,7 +67,19 @@
                             <a href="#DATABASE_CONNECTION_TEST" title="src/constants.ts"><b>DATABASE_CONNECTION_TEST</b>&nbsp;&nbsp;&nbsp;(src/.../constants.ts)</a>
                         </li>
                         <li>
+                            <a href="#DateDiff" title="src/common/datetime.utils.ts"><b>DateDiff</b>&nbsp;&nbsp;&nbsp;(src/.../datetime.utils.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#discountStrategies" title="src/discounts/discountStrategy.ts"><b>discountStrategies</b>&nbsp;&nbsp;&nbsp;(src/.../discountStrategy.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#jwtConstants" title="src/auth/constants.ts"><b>jwtConstants</b>&nbsp;&nbsp;&nbsp;(src/.../constants.ts)</a>
+                        </li>
+                        <li>
                             <a href="#PHOTO_REPOSITORY" title="src/constants.ts"><b>PHOTO_REPOSITORY</b>&nbsp;&nbsp;&nbsp;(src/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#taxStrategies" title="src/countries/taxStrategy.ts"><b>taxStrategies</b>&nbsp;&nbsp;&nbsp;(src/.../taxStrategy.ts)</a>
                         </li>
                     </ul>
                 </td>
@@ -156,6 +168,205 @@
                     <tr>
                         <td class="col-md-4">
                             <i>Default value : </i><code>&#x27;PHOTO_REPOSITORY&#x27; as const</code>
+                        </td>
+                    </tr>
+
+
+            </tbody>
+        </table>
+</section>
+    <h3>src/common/datetime.utils.ts</h3>
+    <section>
+    <h3></h3>        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="DateDiff"></a>
+                        <span class="name">
+                            <b>
+                            DateDiff</b>
+                            <a href="#DateDiff"><span class="icon ion-ios-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/object" target="_blank" >object</a></code>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Default value : </i><code>{
+  inDays: function(d1: Date, d2: Date) {
+    const t2 &#x3D; d2.getTime();
+    const t1 &#x3D; d1.getTime();
+
+    return Math.trunc((t2 - t1) / (24 * 3600 * 1000));
+  },
+
+  inWeeks: function(d1: Date, d2: Date) {
+    const t2 &#x3D; d2.getTime();
+    const t1 &#x3D; d1.getTime();
+
+    return Math.trunc((t2 - t1) / (24 * 3600 * 1000 * 7));
+  },
+
+  inMonths: function(d1: Date, d2: Date) {
+    const d1Y &#x3D; d1.getFullYear();
+    const d2Y &#x3D; d2.getFullYear();
+    const d1M &#x3D; d1.getMonth();
+    const d2M &#x3D; d2.getMonth();
+
+    return d2M + 12 * d2Y - (d1M + 12 * d1Y);
+  },
+
+  inYears: function(d1: Date, d2: Date) {
+    return d2.getFullYear() - d1.getFullYear();
+  },
+}</code>
+                        </td>
+                    </tr>
+
+
+            </tbody>
+        </table>
+</section>
+    <h3>src/discounts/discountStrategy.ts</h3>
+    <section>
+    <h3></h3>        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="discountStrategies"></a>
+                        <span class="name">
+                            <b>
+                            discountStrategies</b>
+                            <a href="#discountStrategies"><span class="icon ion-ios-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Type : </i>        <code><a href="../interfaces/DiscountStrategy.html" target="_self" >Record&lt;DiscountType, DiscountStrategy&gt;</a></code>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Default value : </i><code>{
+  Week: { isSatisfied: stayDays &#x3D;&gt; (stayDays &gt;&#x3D; 7 ? true : false) },
+  Month: { isSatisfied: stayDays &#x3D;&gt; (stayDays &gt;&#x3D; 28 ? true : false) },
+  Special: { isSatisfied: _ &#x3D;&gt; true },
+}</code>
+                        </td>
+                    </tr>
+
+
+            </tbody>
+        </table>
+</section>
+    <h3>src/auth/constants.ts</h3>
+    <section>
+    <h3></h3>        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="jwtConstants"></a>
+                        <span class="name">
+                            <b>
+                            jwtConstants</b>
+                            <a href="#jwtConstants"><span class="icon ion-ios-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/object" target="_blank" >object</a></code>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Default value : </i><code>{
+  secret: process.env.JWT_SECRET || &#x27;secretKey&#x27;,
+}</code>
+                        </td>
+                    </tr>
+
+
+            </tbody>
+        </table>
+</section>
+    <h3>src/countries/taxStrategy.ts</h3>
+    <section>
+    <h3></h3>        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="taxStrategies"></a>
+                        <span class="name">
+                            <b>
+                            taxStrategies</b>
+                            <a href="#taxStrategies"><span class="icon ion-ios-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Type : </i>        <code><a href="../interfaces/TaxStrategy.html" target="_self" >Record&lt;CountryName, TaxStrategy&gt;</a></code>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Default value : </i><code>{
+  SouthKorea: {
+    calculateTax: (room, stayDays) &#x3D;&gt; ({ percent: 10, amount: 0 }),
+  },
+  Japan: {
+    calculateTax: (room, stayDays) &#x3D;&gt; ({ percent: 5, amount: 0 }),
+  },
+  Bermuda: {
+    calculateTax: (room, stayDays) &#x3D;&gt; ({ percent: 5, amount: 0 }),
+  },
+  Brazil: {
+    calculateTax: (room, stayDays) &#x3D;&gt; ({ percent: 5, amount: 0 }),
+  },
+  BritishVirginIslands: {
+    calculateTax: (room, stayDays) &#x3D;&gt; ({ percent: 5, amount: 0 }),
+  },
+  Canada: {
+    calculateTax: (room, stayDays) &#x3D;&gt; ({ percent: 5, amount: 0 }),
+  },
+  France: {
+    calculateTax: (room, stayDays) &#x3D;&gt; ({ percent: 5, amount: 0 }),
+  },
+  Germany: {
+    calculateTax: (room, stayDays) &#x3D;&gt; ({ percent: 5, amount: 0 }),
+  },
+  India: {
+    calculateTax: (room, stayDays) &#x3D;&gt; ({ percent: 5, amount: 0 }),
+  },
+  Italy: {
+    calculateTax: (room, stayDays) &#x3D;&gt; ({ percent: 5, amount: 0 }),
+  },
+  Lithuania: {
+    calculateTax: (room, stayDays) &#x3D;&gt; ({ percent: 5, amount: 0 }),
+  },
+  Mexico: {
+    calculateTax: (room, stayDays) &#x3D;&gt; ({ percent: 5, amount: 0 }),
+  },
+  Netherlands: {
+    calculateTax: (room, stayDays) &#x3D;&gt; ({ percent: 5, amount: 0 }),
+  },
+  Portugal: {
+    calculateTax: (room, stayDays) &#x3D;&gt; ({ percent: 5, amount: 0 }),
+  },
+  Switzerland: {
+    calculateTax: (room, stayDays) &#x3D;&gt; ({ percent: 5, amount: 0 }),
+  },
+}</code>
                         </td>
                     </tr>
 
