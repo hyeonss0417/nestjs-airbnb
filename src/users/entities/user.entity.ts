@@ -17,6 +17,7 @@ import { Conversation } from 'src/conversations/entities/conversation.entity';
 import { Message } from 'src/conversations/entities/message.entity';
 import { List } from 'src/lists/entities/list.entity';
 import { Review } from 'src/reviews/entities/review.entity';
+import { Role } from './role.entity';
 
 @Entity()
 export class User extends CoreEntity {
@@ -42,10 +43,6 @@ export class User extends CoreEntity {
 
   @Column({ default: false })
   @IsBoolean()
-  isStaff: boolean;
-
-  @Column({ default: false })
-  @IsBoolean()
   verified: boolean;
 
   @Column({ length: 500, nullable: true })
@@ -56,7 +53,15 @@ export class User extends CoreEntity {
   @IsString()
   avatar: string;
 
+  @OneToMany(
+    type => Role,
+    role => role.user,
+    { eager: true },
+  )
+  roles: Role[];
+
   // ===== Inverse side Relation =====
+
   @OneToMany(
     type => List,
     list => list.owner,
