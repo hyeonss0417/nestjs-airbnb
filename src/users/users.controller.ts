@@ -23,9 +23,7 @@ export class UsersController {
   @Public()
   @Post()
   async create(@Body() createUserDto: CreateUserDto): Promise<boolean> {
-    const user = await this.usersService.create(createUserDto);
-    if (user) return true;
-    return false;
+    return await this.usersService.create(createUserDto);
   }
 
   @Roles(UserRole.Admin)

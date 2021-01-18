@@ -110,7 +110,8 @@ export class User extends CoreEntity {
   async hashPassword(): Promise<void> {
     if (this.password) {
       try {
-        this.password = await bcrypt.hash(this.password, 10);
+        const saltOrRounds = 10;
+        this.password = await bcrypt.hash(this.password, saltOrRounds);
       } catch (e) {
         console.log(e);
         throw new InternalServerErrorException();
