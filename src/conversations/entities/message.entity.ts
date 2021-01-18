@@ -1,5 +1,5 @@
-import { CoreEntity } from 'src/common/entities/core.entity';
-import { User } from 'src/users/entities/user.entity';
+import { CoreEntity } from '../../common/entities/core.entity';
+import { User } from '../../users/entities/user.entity';
 import { Column, Entity, JoinTable, ManyToOne } from 'typeorm';
 import { Conversation } from './conversation.entity';
 

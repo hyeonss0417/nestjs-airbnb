@@ -1,5 +1,5 @@
 import { IsEnum, IsInt } from 'class-validator';
-import { CoreEntity } from 'src/common/entities/core.entity';
+import { CoreEntity } from '../../common/entities/core.entity';
 import { Check, Column, Entity, ManyToOne } from 'typeorm';
 import { Review } from './review.entity';
 

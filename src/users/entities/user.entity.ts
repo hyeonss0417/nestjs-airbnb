@@ -1,8 +1,8 @@
 import { IsBoolean, IsDate, IsEmail, IsString } from 'class-validator';
-import { CoreEntity } from 'src/common/entities/core.entity';
-import { Payment } from 'src/payments/entities/payment.entity';
-import { Reservation } from 'src/reservations/entities/reservation.entity';
-import { Room } from 'src/rooms/entities/room.entity';
+import { CoreEntity } from '../../common/entities/core.entity';
+import { Payment } from '../../payments/entities/payment.entity';
+import { Reservation } from '../../reservations/entities/reservation.entity';
+import { Room } from '../../rooms/entities/room.entity';
 import {
   BeforeInsert,
   BeforeUpdate,
@@ -13,10 +13,10 @@ import {
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { InternalServerErrorException } from '@nestjs/common';
-import { Conversation } from 'src/conversations/entities/conversation.entity';
-import { Message } from 'src/conversations/entities/message.entity';
-import { List } from 'src/lists/entities/list.entity';
-import { Review } from 'src/reviews/entities/review.entity';
+import { Conversation } from '../../conversations/entities/conversation.entity';
+import { Message } from '../../conversations/entities/message.entity';
+import { List } from '../../lists/entities/list.entity';
+import { Review } from '../../reviews/entities/review.entity';
 import { Role } from './role.entity';
 
 @Entity()

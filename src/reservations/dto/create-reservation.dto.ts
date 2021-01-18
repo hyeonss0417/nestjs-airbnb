@@ -1,4 +1,4 @@
-import { DateDiff, DateRange } from 'src/common/datetime.utils';
+import { DateDiff, DateRange } from '../../common/datetime.utils';
 
 export class CreateReservationDto {
   roomId: number;

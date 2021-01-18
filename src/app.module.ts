@@ -3,7 +3,6 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TodoModule } from './todo/todo.module';
 import { UsersModule } from './users/users.module';
 import { RoomsModule } from './rooms/rooms.module';
 import { ReservationsModule } from './reservations/reservations.module';
@@ -56,7 +55,6 @@ import * as Joi from 'joi';
       logging: false, // process.env.NODE !== 'dev' && process.env.NODE !== 'prod' && process.env.NODE_ENV !== 'test'
       entities: ['dist/**/*.entity{.ts,.js}'],
     }),
-    TodoModule,
     UsersModule,
     RoomsModule,
     ReservationsModule,
