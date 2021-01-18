@@ -6,15 +6,11 @@ import { User } from '../users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { AuthService } from './auth.service';
 import { Verification } from './entities/varification.entity';
-import { mockRepository } from '../common/mock';
-
-const mockJwtService = () => ({
-  sign: jest.fn(() => 'jwt-token'),
-});
-
-const mockMailService = () => ({
-  sendVerificationEmail: jest.fn(),
-});
+import {
+  mockJwtService,
+  mockMailService,
+  mockRepository,
+} from '../mock/services.mock';
 
 type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
 
