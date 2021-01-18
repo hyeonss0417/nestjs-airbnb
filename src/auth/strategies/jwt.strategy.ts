@@ -18,6 +18,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(payload: any): Promise<User> {
     const user: User = await this.authService.getUserByPayload(payload);
     if (!user) throw new BadRequestException('존재하지 않는 유저입니다.');
+    if (!user.verified)
+      throw new BadRequestException('이메일 인증을 완료해주세요.');
     return user;
   }
 }

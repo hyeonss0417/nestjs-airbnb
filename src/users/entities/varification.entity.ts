@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 @Entity()
 export class Verification extends CoreEntity {
-  @Column()
+  @Column({ unique: true })
   code: string;
 
   @OneToOne(type => User, { onDelete: 'CASCADE' })

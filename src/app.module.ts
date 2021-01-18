@@ -18,6 +18,7 @@ import { CountriesModule } from './countries/countries.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
+import { MailModule } from './mail/mail.module';
 import * as Joi from 'joi';
 
 @Module({
@@ -52,7 +53,7 @@ import * as Joi from 'joi';
             database: process.env.DB_NAME,
           }),
       synchronize: process.env.NODE_ENV !== 'prod',
-      logging: process.env.NODE !== 'prod' && process.env.NODE_ENV !== 'test',
+      logging: false, // process.env.NODE !== 'dev' && process.env.NODE !== 'prod' && process.env.NODE_ENV !== 'test'
       entities: ['dist/**/*.entity{.ts,.js}'],
     }),
     TodoModule,
@@ -67,6 +68,7 @@ import * as Joi from 'joi';
     CountriesModule,
     DiscountsModule,
     AuthModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [

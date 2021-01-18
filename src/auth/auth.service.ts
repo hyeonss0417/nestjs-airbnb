@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
@@ -28,5 +28,9 @@ export class AuthService {
 
   async getUserByPayload(payload: any): Promise<User> {
     return await this.usersService.findOne(payload.sub);
+  }
+
+  async verifyEmail(code: string): Promise<boolean> {
+    return await this.usersService.verifyEmail(code);
   }
 }
