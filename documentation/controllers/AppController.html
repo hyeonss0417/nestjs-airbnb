@@ -78,6 +78,13 @@
                             <li>
                                 <a href="#getHello">getHello</a>
                             </li>
+                            <li>
+                                <a href="#getProfile">getProfile</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#login">login</a>
+                            </li>
                         </ul>
                     </td>
                 </tr>
@@ -124,8 +131,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="9"
-                            class="link-to-prism">src/app.controller.ts:9</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="27"
+                            class="link-to-prism">src/app.controller.ts:27</a></div>
                 </td>
             </tr>
 
@@ -141,16 +148,182 @@
             </tr>
         </tbody>
     </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getProfile"></a>
+                    <span class="name">
+                        <b>
+                            getProfile
+                        </b>
+                        <a href="#getProfile"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>getProfile(req)</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <b>Decorators : </b>
+                    <br />
+                    <code>@UseGuards(JwtAuthGuard)<br />@Get(&#x27;profile&#x27;)<br /></code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="22"
+                            class="link-to-prism">src/app.controller.ts:22</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>req</td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="login"></a>
+                    <span class="name">
+                        <b>
+                            <span class="modifier">Async</span>
+                            login
+                        </b>
+                        <a href="#login"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>login(req)</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <b>Decorators : </b>
+                    <br />
+                    <code>@UseGuards(LocalAuthGuard)<br />@Post(&#x27;auth/login&#x27;)<br /></code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="16"
+                            class="link-to-prism">src/app.controller.ts:16</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>req</td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>{}</code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </section>    </div>
 
 
     <div class="tab-pane fade  tab-source-code" id="c-source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Controller, Get } from &#x27;@nestjs/common&#x27;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Controller, Get, Post, Request, UseGuards } from &#x27;@nestjs/common&#x27;;
 import { AppService } from &#x27;./app.service&#x27;;
+import { AuthService } from &#x27;./auth/auth.service&#x27;;
+import { JwtAuthGuard } from &#x27;./auth/guards/jwt-auth.guard&#x27;;
+import { LocalAuthGuard } from &#x27;./auth/guards/local-auth.guard&#x27;;
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    private readonly appService: AppService,
+    private readonly authService: AuthService,
+  ) {}
+
+  @UseGuards(LocalAuthGuard)
+  @Post(&#x27;auth/login&#x27;)
+  async login(@Request() req) {
+    return this.authService.login(req.user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(&#x27;profile&#x27;)
+  getProfile(@Request() req) {
+    return req.user;
+  }
 
   @Get()
   getHello(): string {

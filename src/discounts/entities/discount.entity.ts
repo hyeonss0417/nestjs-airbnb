@@ -1,6 +1,6 @@
 import { IsDate, IsEnum, IsInt } from 'class-validator';
-import { CoreEntity } from 'src/common/entities/core.entity';
-import { Room } from 'src/rooms/entities/room.entity';
+import { CoreEntity } from '../../common/entities/core.entity';
+import { Room } from '../../rooms/entities/room.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
 import { discountStrategies } from '../discountStrategy';
 

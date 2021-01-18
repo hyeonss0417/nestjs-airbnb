@@ -82,9 +82,11 @@
                     <td class="col-md-4">
                         <ul class="index-list">
                             <li>
+                                    <span class="modifier">Async</span>
                                 <a href="#create">create</a>
                             </li>
                             <li>
+                                    <span class="modifier">Async</span>
                                 <a href="#findAll">findAll</a>
                             </li>
                             <li>
@@ -120,6 +122,7 @@
                     <a name="create"></a>
                     <span class="name">
                         <b>
+                            <span class="modifier">Async</span>
                             create
                         </b>
                         <a href="#create"><span class="icon ion-ios-link"></span></a>
@@ -128,7 +131,8 @@
             </tr>
             <tr>
                 <td class="col-md-4">
-<code>create(createUserDto: <a href="../classes/CreateUserDto.html">CreateUserDto</a>)</code>
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>create(createUserDto: <a href="../classes/CreateUserDto.html">CreateUserDto</a>)</code>
                 </td>
             </tr>
 
@@ -142,8 +146,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="11"
-                            class="link-to-prism">src/users/users.controller.ts:11</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="20"
+                            class="link-to-prism">src/users/users.controller.ts:20</a></div>
                 </td>
             </tr>
 
@@ -180,7 +184,7 @@
                     <div>
                     </div>
                     <div class="io-description">
-                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                        <b>Returns : </b>    <code>Promise&lt;boolean&gt;</code>
 
                     </div>
                     <div class="io-description">
@@ -197,6 +201,7 @@
                     <a name="findAll"></a>
                     <span class="name">
                         <b>
+                            <span class="modifier">Async</span>
                             findAll
                         </b>
                         <a href="#findAll"><span class="icon ion-ios-link"></span></a>
@@ -205,7 +210,8 @@
             </tr>
             <tr>
                 <td class="col-md-4">
-<code>findAll()</code>
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>findAll()</code>
                 </td>
             </tr>
 
@@ -219,8 +225,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="16"
-                            class="link-to-prism">src/users/users.controller.ts:16</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="27"
+                            class="link-to-prism">src/users/users.controller.ts:27</a></div>
                 </td>
             </tr>
 
@@ -229,7 +235,7 @@
                 <td class="col-md-4">
 
                     <div class="io-description">
-                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                        <b>Returns : </b>        <code><a href="../classes/User.html" target="_self" >Promise&lt;User[]&gt;</a></code>
 
                     </div>
                 </td>
@@ -265,8 +271,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="21"
-                            class="link-to-prism">src/users/users.controller.ts:21</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="32"
+                            class="link-to-prism">src/users/users.controller.ts:32</a></div>
                 </td>
             </tr>
 
@@ -342,8 +348,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="31"
-                            class="link-to-prism">src/users/users.controller.ts:31</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="42"
+                            class="link-to-prism">src/users/users.controller.ts:42</a></div>
                 </td>
             </tr>
 
@@ -419,8 +425,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="26"
-                            class="link-to-prism">src/users/users.controller.ts:26</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="37"
+                            class="link-to-prism">src/users/users.controller.ts:37</a></div>
                 </td>
             </tr>
 
@@ -483,23 +489,34 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="c-source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Controller, Get, Post, Body, Put, Param, Delete } from &#x27;@nestjs/common&#x27;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Put,
+  Param,
+  Delete,
+} from &#x27;@nestjs/common&#x27;;
 import { UsersService } from &#x27;./users.service&#x27;;
 import { CreateUserDto } from &#x27;./dto/create-user.dto&#x27;;
 import { UpdateUserDto } from &#x27;./dto/update-user.dto&#x27;;
+import { User } from &#x27;./entities/user.entity&#x27;;
 
 @Controller(&#x27;users&#x27;)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto): Promise&lt;boolean&gt; {
+    const user &#x3D; await this.usersService.create(createUserDto);
+    if (user) return true;
+    return false;
   }
 
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  async findAll(): Promise&lt;User[]&gt; {
+    return await this.usersService.findAll();
   }
 
   @Get(&#x27;:id&#x27;)

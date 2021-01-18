@@ -1,6 +1,6 @@
-import { CoreEntity } from 'src/common/entities/core.entity';
-import { Reservation } from 'src/reservations/entities/reservation.entity';
-import { User } from 'src/users/entities/user.entity';
+import { CoreEntity } from '../../common/entities/core.entity';
+import { Reservation } from '../../reservations/entities/reservation.entity';
+import { User } from '../../users/entities/user.entity';
 import { Entity, JoinTable, ManyToMany, OneToMany, OneToOne } from 'typeorm';
 import { Message } from './message.entity';
 

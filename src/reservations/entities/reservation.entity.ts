@@ -1,18 +1,9 @@
-import { InternalServerErrorException } from '@nestjs/common';
 import { IsDate, IsEnum, IsInt, IsNumber } from 'class-validator';
-import { DateDiff, DateRange } from 'src/common/datetime.utils';
-import { CoreEntity } from 'src/common/entities/core.entity';
-import { Room } from 'src/rooms/entities/room.entity';
-import { User } from 'src/users/entities/user.entity';
-import {
-  Column,
-  DeepPartial,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  ManyToOne,
-} from 'typeorm';
-import { CreateReservationDto } from '../dto/create-reservation.dto';
+import { DateDiff, DateRange } from '../../common/datetime.utils';
+import { CoreEntity } from '../../common/entities/core.entity';
+import { Room } from '../../rooms/entities/room.entity';
+import { User } from '../../users/entities/user.entity';
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne } from 'typeorm';
 
 export enum ReservationStatus {
   REQUESTED = 'REQUESTED',
@@ -77,21 +68,17 @@ export class Reservation extends CoreEntity {
     );
   }
 
-  constructor({
-    room,
-    guest,
-    guestCnt,
-    checkIn,
-    checkOut,
-    price,
-  }: IReservationConstructor) {
+  constructor(data?: IReservationConstructor) {
     super();
-    this.room = room;
-    this.guests = [guest];
-    this.guestCnt = guestCnt;
-    this.checkIn = checkIn;
-    this.checkOut = checkOut;
-    this.price = price;
+    if (data) {
+      const { room, guest, guestCnt, checkIn, checkOut, price } = data;
+      this.room = room;
+      this.guests = [guest];
+      this.guestCnt = guestCnt;
+      this.checkIn = checkIn;
+      this.checkOut = checkOut;
+      this.price = price;
+    }
   }
 }
 

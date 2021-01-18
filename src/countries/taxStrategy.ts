@@ -1,4 +1,4 @@
-import { Room } from 'src/rooms/entities/room.entity';
+import { Room } from '../rooms/entities/room.entity';
 import { CountryName } from './entities/country.entity';
 
 interface TaxStrategy {

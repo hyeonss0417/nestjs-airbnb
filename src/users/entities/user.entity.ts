@@ -1,23 +1,23 @@
-import { IsBoolean, IsEmail, IsString } from 'class-validator';
-import { CoreEntity } from 'src/common/entities/core.entity';
-import { Payment } from 'src/payments/entities/payment.entity';
-import { Reservation } from 'src/reservations/entities/reservation.entity';
-import { Room } from 'src/rooms/entities/room.entity';
+import { IsBoolean, IsDate, IsEmail, IsString } from 'class-validator';
+import { CoreEntity } from '../../common/entities/core.entity';
+import { Payment } from '../../payments/entities/payment.entity';
+import { Reservation } from '../../reservations/entities/reservation.entity';
+import { Room } from '../../rooms/entities/room.entity';
 import {
   BeforeInsert,
   BeforeUpdate,
   Column,
   Entity,
-  JoinTable,
   ManyToMany,
   OneToMany,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { InternalServerErrorException } from '@nestjs/common';
-import { Conversation } from 'src/conversations/entities/conversation.entity';
-import { Message } from 'src/conversations/entities/message.entity';
-import { List } from 'src/lists/entities/list.entity';
-import { Review } from 'src/reviews/entities/review.entity';
+import { Conversation } from '../../conversations/entities/conversation.entity';
+import { Message } from '../../conversations/entities/message.entity';
+import { List } from '../../lists/entities/list.entity';
+import { Review } from '../../reviews/entities/review.entity';
+import { Role } from './role.entity';
 
 @Entity()
 export class User extends CoreEntity {
@@ -37,24 +37,31 @@ export class User extends CoreEntity {
   @IsString()
   password: string;
 
-  @Column({ type: 'datetime' })
+  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+  @IsDate()
   lastLogin: Date;
-
-  @Column({ default: false })
-  @IsBoolean()
-  isStaff: boolean;
 
   @Column({ default: false })
   @IsBoolean()
   verified: boolean;
 
-  @Column({ length: 500 })
+  @Column({ length: 500, nullable: true })
+  @IsString()
   bio: string;
 
-  @Column()
+  @Column({ nullable: true })
+  @IsString()
   avatar: string;
 
+  @OneToMany(
+    type => Role,
+    role => role.user,
+    { eager: true },
+  )
+  roles: Role[];
+
   // ===== Inverse side Relation =====
+
   @OneToMany(
     type => List,
     list => list.owner,
@@ -103,7 +110,8 @@ export class User extends CoreEntity {
   async hashPassword(): Promise<void> {
     if (this.password) {
       try {
-        this.password = await bcrypt.hash(this.password, 10);
+        const saltOrRounds = 10;
+        this.password = await bcrypt.hash(this.password, saltOrRounds);
       } catch (e) {
         console.log(e);
         throw new InternalServerErrorException();
