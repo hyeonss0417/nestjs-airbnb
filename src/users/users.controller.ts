@@ -6,6 +6,7 @@ import {
   Put,
   Param,
   Delete,
+  Request,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -32,6 +33,12 @@ export class UsersController {
     return await this.usersService.findAll();
   }
 
+  @Get('profile')
+  getProfile(@Request() req) {
+    return req.user;
+  }
+
+  @Public()
   @Get(':id')
   async getOtherProfile(@Param('id') id: string): Promise<DeepPartial<User>> {
     const user = await this.usersService.findOne(+id);

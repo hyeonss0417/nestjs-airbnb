@@ -6,7 +6,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Role, UserRole } from './entities/role.entity';
 import { User } from './entities/user.entity';
-import { Verification } from './entities/varification.entity';
+import { Verification } from '../auth/entities/varification.entity';
 
 @Injectable()
 export class UsersService {
@@ -46,37 +46,11 @@ export class UsersService {
     return await this.userRepository.findOne({ id });
   }
 
-  async findOneByEmail(email: string): Promise<User> {
-    return await this.userRepository.findOne(
-      { email },
-      { select: ['id', 'email', 'password'], loadEagerRelations: true },
-    );
-  }
-
   async update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
   }
 
   async remove(id: number) {
     return `This action removes a #${id} user`;
-  }
-
-  async verifyEmail(code: string): Promise<boolean> {
-    try {
-      const verification = await this.verificationRepository.findOne(
-        { code },
-        { relations: ['user'] },
-      );
-      if (!verification)
-        throw new BadRequestException('유효하지 않은 코드입니다.');
-
-      verification.user.verified = true;
-      await this.userRepository.save(verification.user);
-      await this.verificationRepository.delete(verification.id);
-      return true;
-    } catch (e) {
-      console.log(e);
-      return false;
-    }
   }
 }
