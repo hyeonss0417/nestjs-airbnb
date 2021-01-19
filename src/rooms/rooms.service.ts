@@ -8,18 +8,38 @@ import { ReserveRoomDTO } from './dto/reserve-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
 import { Room } from './entities/room.entity';
 import { Country } from '../countries/entities/country.entity';
+import { Facility } from './entities/facility.entity';
+import { Rule } from './entities/rule.entity';
+import { Amenity } from './entities/amenity.entity';
+import { Photo } from '../photos/entities/photo.entity';
 
 @Injectable()
 export class RoomsService {
   constructor(
     @InjectRepository(Room)
     private readonly roomRepository: Repository<Room>,
+    @InjectRepository(Facility)
+    private readonly facilityRepository: Repository<Facility>,
+    @InjectRepository(Rule)
+    private readonly ruleRepository: Repository<Rule>,
+    @InjectRepository(Amenity)
+    private readonly amenityRepository: Repository<Amenity>,
+    @InjectRepository(Photo)
+    private readonly photoRepository: Repository<Photo>,
     @InjectRepository(Reservation)
     private readonly reservationRepository: Repository<Reservation>,
   ) {}
 
   async create(createRoomDto: CreateRoomDto) {
-    const { hostId, countryId, ...rest } = createRoomDto;
+    const {
+      hostId,
+      countryId,
+      photos,
+      facilities,
+      rules,
+      amenities,
+      ...rest
+    } = createRoomDto;
 
     const host = new User();
     host.id = +hostId;
@@ -28,9 +48,20 @@ export class RoomsService {
     country.id = +countryId;
 
     const room = await this.roomRepository.create({
-      host,
-      country,
       ...rest,
+      host,
+      photos: await Promise.all(
+        photos.map(photo => this.photoRepository.save(photo)),
+      ),
+      facilities: await Promise.all(
+        facilities.map(facility => this.facilityRepository.save(facility)),
+      ),
+      rules: await Promise.all(
+        rules.map(rule => this.ruleRepository.save(rule)),
+      ),
+      amenities: await Promise.all(
+        amenities.map(amenity => this.amenityRepository.save(amenity)),
+      ),
     });
 
     return await this.roomRepository.save(room);
