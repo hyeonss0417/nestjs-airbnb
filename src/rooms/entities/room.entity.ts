@@ -12,7 +12,14 @@ import { Photo } from '../../photos/entities/photo.entity';
 import { Reservation } from '../../reservations/entities/reservation.entity';
 import { Review } from '../../reviews/entities/review.entity';
 import { User } from '../../users/entities/user.entity';
-import { Column, Entity, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { ReserveRoomDTO } from '../dto/reserve-room.dto';
 import { Amenity } from './amenity.entity';
 import { Facility } from './facility.entity';
@@ -116,18 +123,21 @@ export class Room extends CoreEntity {
     type => Facility,
     facility => facility.rooms,
   )
+  @JoinTable()
   facilities: Facility[];
 
   @ManyToMany(
     type => Rule,
     facility => facility.rooms,
   )
+  @JoinTable()
   rules: Rule[];
 
   @ManyToMany(
     type => Amenity,
     amenity => amenity.rooms,
   )
+  @JoinTable()
   amenities: Amenity[];
   // ====================
 

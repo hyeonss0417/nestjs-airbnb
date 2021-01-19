@@ -1,7 +1,7 @@
-import { IsString } from 'class-validator';
+import { IsString, IsUrl } from 'class-validator';
 
 export class CreatePhotoDto {
-  @IsString()
+  @IsUrl()
   url: string;
 
   @IsString()

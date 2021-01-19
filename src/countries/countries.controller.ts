@@ -1,14 +1,17 @@
 import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import { Public } from '../auth/decorators/public.decorator';
 import { CountriesService } from './countries.service';
 import { CreateCountryDto } from './dto/create-country.dto';
+import { Country } from './entities/country.entity';
 
 @Controller('countries')
 export class CountriesController {
   constructor(private readonly countriesService: CountriesService) {}
 
+  @Public()
   @Post()
-  create(@Body() createCountryDto: CreateCountryDto) {
-    return this.countriesService.create(createCountryDto);
+  async create(@Body() createCountryDto: CreateCountryDto): Promise<Country> {
+    return await this.countriesService.create(createCountryDto);
   }
 
   @Get()

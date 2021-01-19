@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import {
   IsEnum,
   IsInt,
@@ -5,13 +6,11 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
+import { IsNonPrimitiveArray } from '../../common/class-validator';
 import { CreatePhotoDto } from '../../photos/dto/create-photo.dto';
 import { RoomType } from '../entities/room.entity';
 
 export class CreateRoomDto {
-  @IsString()
-  hostId: string;
-
   @IsEnum(RoomType)
   roomType: RoomType;
 
@@ -39,9 +38,6 @@ export class CreateRoomDto {
   @IsString()
   description: string;
 
-  @ValidateNested()
-  photos: CreatePhotoDto[];
-
   @IsString()
   countryId: string;
 
@@ -61,14 +57,26 @@ export class CreateRoomDto {
   @IsString()
   addressZipCode: string;
 
+  // ===============
+  @ValidateNested({ each: true })
+  @IsNonPrimitiveArray()
+  @Type(() => CreatePhotoDto)
+  photos: CreatePhotoDto[];
+
   // ===== Options =====
-  @ValidateNested()
+  @ValidateNested({ each: true })
+  @IsNonPrimitiveArray()
+  @Type(() => CraeteFacilityDto)
   facilities?: CraeteFacilityDto[];
 
-  @ValidateNested()
+  @ValidateNested({ each: true })
+  @IsNonPrimitiveArray()
+  @Type(() => CraeteRuleDto)
   rules?: CraeteRuleDto[];
 
-  @ValidateNested()
+  @ValidateNested({ each: true })
+  @IsNonPrimitiveArray()
+  @Type(() => CraeteAmenityDTO)
   amenities?: CraeteAmenityDTO[];
   // ====================
 }

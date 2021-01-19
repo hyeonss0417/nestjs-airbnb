@@ -30,9 +30,8 @@ export class RoomsService {
     private readonly reservationRepository: Repository<Reservation>,
   ) {}
 
-  async create(createRoomDto: CreateRoomDto) {
+  async create(createRoomDto: CreateRoomDto, host: User) {
     const {
-      hostId,
       countryId,
       photos,
       facilities,
@@ -41,8 +40,9 @@ export class RoomsService {
       ...rest
     } = createRoomDto;
 
-    const host = new User();
-    host.id = +hostId;
+    // TODO: HOST CHECK
+
+    // TODO: checke uniqueness of rules, amenities
 
     const country = new Country();
     country.id = +countryId;
@@ -54,13 +54,21 @@ export class RoomsService {
         photos.map(photo => this.photoRepository.save(photo)),
       ),
       facilities: await Promise.all(
-        facilities.map(facility => this.facilityRepository.save(facility)),
+        facilities.map(
+          facility =>
+            this.facilityRepository.findOne({ name: facility.name }) ||
+            this.facilityRepository.save(facility),
+        ),
       ),
       rules: await Promise.all(
         rules.map(rule => this.ruleRepository.save(rule)),
       ),
       amenities: await Promise.all(
-        amenities.map(amenity => this.amenityRepository.save(amenity)),
+        amenities.map(
+          amenity =>
+            this.amenityRepository.findOne({ name: amenity.name }) ||
+            this.amenityRepository.save(amenity),
+        ),
       ),
     });
 

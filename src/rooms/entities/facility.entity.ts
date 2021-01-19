@@ -4,7 +4,7 @@ import { Column, Entity, ManyToMany } from 'typeorm';
 import { Room } from './room.entity';
 @Entity()
 export class Facility extends CoreEntity {
-  @Column()
+  @Column({ unique: true })
   @IsString()
   name: string;
 
