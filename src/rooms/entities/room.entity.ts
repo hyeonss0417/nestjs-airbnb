@@ -39,7 +39,8 @@ export class Room extends CoreEntity {
   @IsEnum(RoomType)
   roomType: RoomType;
 
-  @Column()
+  @Column({ type: 'int' })
+  @IsInt()
   price: number;
 
   @OneToMany(
@@ -48,7 +49,8 @@ export class Room extends CoreEntity {
   )
   discounts: Discount[];
 
-  @Column({ nullable: true })
+  @Column({ type: 'int', nullable: true })
+  @IsInt()
   cleaningFee: number;
 
   @Column({ type: 'int' })

@@ -7,6 +7,7 @@ import { CreateRoomDto } from './dto/create-room.dto';
 import { ReserveRoomDTO } from './dto/reserve-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
 import { Room } from './entities/room.entity';
+import { Country } from '../countries/entities/country.entity';
 
 @Injectable()
 export class RoomsService {
@@ -17,8 +18,22 @@ export class RoomsService {
     private readonly reservationRepository: Repository<Reservation>,
   ) {}
 
-  create(createRoomDto: CreateRoomDto) {
-    return 'This action adds a new room';
+  async create(createRoomDto: CreateRoomDto) {
+    const { hostId, countryId, ...rest } = createRoomDto;
+
+    const host = new User();
+    host.id = +hostId;
+
+    const country = new Country();
+    country.id = +countryId;
+
+    const room = await this.roomRepository.create({
+      host,
+      country,
+      ...rest,
+    });
+
+    return await this.roomRepository.save(room);
   }
 
   findAll() {
