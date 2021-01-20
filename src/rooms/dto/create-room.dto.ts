@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
 import {
+  IsArray,
   IsEnum,
   IsInt,
   IsNumber,
@@ -66,38 +67,15 @@ export class CreateRoomDto {
   // ===== Options =====
   @ValidateNested({ each: true })
   @IsNonPrimitiveArray()
-  @Type(() => CraeteFacilityDto)
-  facilities?: CraeteFacilityDto[];
-
-  @ValidateNested({ each: true })
-  @IsNonPrimitiveArray()
   @Type(() => CraeteRuleDto)
   rules?: CraeteRuleDto[];
 
-  @ValidateNested({ each: true })
-  @IsNonPrimitiveArray()
-  @Type(() => CraeteAmenityDTO)
-  amenities?: CraeteAmenityDTO[];
+  @IsString({ each: true })
+  amenityIds: string[];
   // ====================
 }
 
-export class CraeteFacilityDto {
-  @IsString()
-  name: string;
-
-  @IsString()
-  description?: string;
-}
-
 export class CraeteRuleDto {
-  @IsString()
-  name: string;
-
-  @IsString()
-  description?: string;
-}
-
-export class CraeteAmenityDTO {
   @IsString()
   name: string;
 

@@ -8,22 +8,25 @@ import { ReserveRoomDTO } from './dto/reserve-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
 import { Room } from './entities/room.entity';
 import { Country } from '../countries/entities/country.entity';
-import { Facility } from './entities/facility.entity';
 import { Rule } from './entities/rule.entity';
-import { Amenity } from './entities/amenity.entity';
+import { AmenityGroup, Amenity } from './entities/amenity.entity';
 import { Photo } from '../photos/entities/photo.entity';
+import {
+  CraeteAmenityDTO,
+  CraeteAmenityGroupDTO,
+} from './dto/create-amenity.dto';
 
 @Injectable()
 export class RoomsService {
   constructor(
     @InjectRepository(Room)
     private readonly roomRepository: Repository<Room>,
-    @InjectRepository(Facility)
-    private readonly facilityRepository: Repository<Facility>,
     @InjectRepository(Rule)
     private readonly ruleRepository: Repository<Rule>,
     @InjectRepository(Amenity)
     private readonly amenityRepository: Repository<Amenity>,
+    @InjectRepository(AmenityGroup)
+    private readonly amenityGroupRepository: Repository<AmenityGroup>,
     @InjectRepository(Photo)
     private readonly photoRepository: Repository<Photo>,
     @InjectRepository(Reservation)
@@ -31,14 +34,7 @@ export class RoomsService {
   ) {}
 
   async create(createRoomDto: CreateRoomDto, host: User) {
-    const {
-      countryId,
-      photos,
-      facilities,
-      rules,
-      amenities,
-      ...rest
-    } = createRoomDto;
+    const { countryId, photos, rules, amenityIds, ...rest } = createRoomDto;
 
     // TODO: HOST CHECK
 
@@ -53,22 +49,11 @@ export class RoomsService {
       photos: await Promise.all(
         photos.map(photo => this.photoRepository.save(photo)),
       ),
-      facilities: await Promise.all(
-        facilities.map(
-          facility =>
-            this.facilityRepository.findOne({ name: facility.name }) ||
-            this.facilityRepository.save(facility),
-        ),
-      ),
       rules: await Promise.all(
         rules.map(rule => this.ruleRepository.save(rule)),
       ),
-      amenities: await Promise.all(
-        amenities.map(
-          amenity =>
-            this.amenityRepository.findOne({ name: amenity.name }) ||
-            this.amenityRepository.save(amenity),
-        ),
+      amenities: await this.amenityRepository.findByIds(
+        amenityIds.map(id => +id),
       ),
     });
 
@@ -89,6 +74,20 @@ export class RoomsService {
 
   remove(id: number) {
     return `This action removes a #${id} room`;
+  }
+
+  async findAllAmenities(): Promise<Amenity[]> {
+    return await this.amenityRepository.find();
+  }
+
+  async createAmenity(createAmentityDTO: CraeteAmenityDTO): Promise<Amenity> {
+    return await this.amenityRepository.save(createAmentityDTO);
+  }
+
+  async createAmenityGroup(
+    createAmenityGroupDTO: CraeteAmenityGroupDTO,
+  ): Promise<AmenityGroup> {
+    return await this.amenityGroupRepository.save(createAmenityGroupDTO);
   }
 
   async reserve(

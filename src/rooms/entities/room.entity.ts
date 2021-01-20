@@ -22,7 +22,6 @@ import {
 } from 'typeorm';
 import { ReserveRoomDTO } from '../dto/reserve-room.dto';
 import { Amenity } from './amenity.entity';
-import { Facility } from './facility.entity';
 import { Rule } from './rule.entity';
 
 export enum RoomType {
@@ -120,15 +119,8 @@ export class Room extends CoreEntity {
 
   // ===== Options =====
   @ManyToMany(
-    type => Facility,
-    facility => facility.rooms,
-  )
-  @JoinTable()
-  facilities: Facility[];
-
-  @ManyToMany(
     type => Rule,
-    facility => facility.rooms,
+    rule => rule.rooms,
   )
   @JoinTable()
   rules: Rule[];
