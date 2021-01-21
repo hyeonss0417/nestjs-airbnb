@@ -43,12 +43,12 @@ export class RoomsService {
     const country = new Country();
     country.id = +countryId;
 
+    await this.photoRepository.save(photos);
+
     const room = await this.roomRepository.create({
       ...rest,
       host,
-      photos: await Promise.all(
-        photos.map(photo => this.photoRepository.save(photo)),
-      ),
+      photos,
       rules: await Promise.all(
         rules.map(rule => this.ruleRepository.save(rule)),
       ),

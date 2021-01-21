@@ -22,7 +22,7 @@ import {
 } from 'typeorm';
 import { ReserveRoomDTO } from '../dto/reserve-room.dto';
 import { Amenity } from './amenity.entity';
-import { Rule } from './rule.entity';
+import { Detail, Rule, RuleDescription } from './rule.entity';
 
 export enum RoomType {
   Apartment = 'Apartment',
@@ -125,6 +125,19 @@ export class Room extends CoreEntity {
   @JoinTable()
   rules: Rule[];
 
+  @OneToMany(
+    type => RuleDescription,
+    desc => desc.room,
+  )
+  ruleDescriptions: RuleDescription[];
+
+  @ManyToMany(
+    type => Detail,
+    rule => rule.rooms,
+  )
+  @JoinTable()
+  details: Detail[];
+
   @ManyToMany(
     type => Amenity,
     amenity => amenity.rooms,
@@ -154,11 +167,18 @@ export class Room extends CoreEntity {
 
   // ===== Domain Methods =====
   reserve(reserveRoomDTO: ReserveRoomDTO, guest: User): Reservation {
-    const reservation = new Reservation({
-      ...reserveRoomDTO,
-      room: this,
-      guest,
-    });
+    const { paymentId, ...reservationData } = reserveRoomDTO;
+
+    const reservation = new Reservation();
+    reservation.room = this;
+    reservation.guests = [guest];
+
+    // reservation = {
+    //   ...reservationData,
+    //   room: this,
+    //   guests: [guest],
+    // };
+
     this.validateReservation(reservation);
     return reservation;
   }
