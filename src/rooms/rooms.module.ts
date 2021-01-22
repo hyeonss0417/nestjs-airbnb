@@ -4,7 +4,7 @@ import { RoomsController } from './rooms.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Room } from './entities/room.entity';
 import { Reservation } from '../reservations/entities/reservation.entity';
-import { Rule } from './entities/rule.entity';
+import { CustomRule, DetailChoice, RuleChoice } from './entities/rule.entity';
 import { Amenity, AmenityGroup } from './entities/amenity.entity';
 import { Photo } from '../photos/entities/photo.entity';
 
@@ -12,7 +12,9 @@ import { Photo } from '../photos/entities/photo.entity';
   imports: [
     TypeOrmModule.forFeature([
       Room,
-      Rule,
+      RuleChoice,
+      CustomRule,
+      DetailChoice,
       Amenity,
       AmenityGroup,
       Photo,

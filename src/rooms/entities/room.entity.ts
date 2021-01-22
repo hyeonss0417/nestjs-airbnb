@@ -22,7 +22,7 @@ import {
 } from 'typeorm';
 import { ReserveRoomDTO } from '../dto/reserve-room.dto';
 import { Amenity } from './amenity.entity';
-import { Detail, Rule, RuleDescription } from './rule.entity';
+import { CustomRule, DetailChoice, RuleChoice } from './rule.entity';
 
 export enum RoomType {
   Apartment = 'Apartment',
@@ -118,25 +118,23 @@ export class Room extends CoreEntity {
   // ====================
 
   // ===== Options =====
-  @ManyToMany(
-    type => Rule,
-    rule => rule.rooms,
+  @OneToMany(
+    type => RuleChoice,
+    rule => rule.room,
   )
-  @JoinTable()
-  rules: Rule[];
+  ruleChoices: RuleChoice[];
 
   @OneToMany(
-    type => RuleDescription,
+    type => CustomRule,
     desc => desc.room,
   )
-  ruleDescriptions: RuleDescription[];
+  customRules: CustomRule[];
 
-  @ManyToMany(
-    type => Detail,
-    rule => rule.rooms,
+  @OneToMany(
+    type => DetailChoice,
+    detail => detail.room,
   )
-  @JoinTable()
-  details: Detail[];
+  detailChoices: DetailChoice[];
 
   @ManyToMany(
     type => Amenity,

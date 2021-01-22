@@ -8,21 +8,32 @@ import { ReserveRoomDTO } from './dto/reserve-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
 import { Room } from './entities/room.entity';
 import { Country } from '../countries/entities/country.entity';
-import { Rule } from './entities/rule.entity';
+import {
+  CustomRule,
+  Detail,
+  DetailChoice,
+  Rule,
+  RuleChoice,
+} from './entities/rule.entity';
 import { AmenityGroup, Amenity } from './entities/amenity.entity';
 import { Photo } from '../photos/entities/photo.entity';
 import {
   CraeteAmenityDTO,
   CraeteAmenityGroupDTO,
 } from './dto/create-amenity.dto';
+import { title } from 'process';
 
 @Injectable()
 export class RoomsService {
   constructor(
     @InjectRepository(Room)
     private readonly roomRepository: Repository<Room>,
-    @InjectRepository(Rule)
-    private readonly ruleRepository: Repository<Rule>,
+    @InjectRepository(RuleChoice)
+    private readonly ruleChoiceRepository: Repository<RuleChoice>,
+    @InjectRepository(DetailChoice)
+    private readonly detailChoiceRepository: Repository<DetailChoice>,
+    @InjectRepository(CustomRule)
+    private readonly customRuleRepository: Repository<CustomRule>,
     @InjectRepository(Amenity)
     private readonly amenityRepository: Repository<Amenity>,
     @InjectRepository(AmenityGroup)
@@ -34,29 +45,54 @@ export class RoomsService {
   ) {}
 
   async create(createRoomDto: CreateRoomDto, host: User) {
-    const { countryId, photos, rules, amenityIds, ...rest } = createRoomDto;
+    const {
+      countryId,
+      photos: _photos,
+      amenityIds,
+      ruleChoices: _ruleChoices,
+      customRules: _customRules,
+      detailChoices: _detailChoices,
+      ...rest
+    } = createRoomDto;
 
     // TODO: HOST CHECK
 
-    // TODO: checke uniqueness of rules, amenities
-
     const country = new Country();
-    country.id = +countryId;
+    country.id = countryId;
 
-    await this.photoRepository.save(photos);
+    const photos = await this.photoRepository.save(_photos);
+    const ruleChoices = await this.ruleChoiceRepository.save(
+      _ruleChoices.map(({ ruleId, isOkay, description }) => {
+        const rule = new Rule();
+        rule.id = ruleId;
+        return { rule, isOkay, description };
+      }),
+    );
+
+    const customRules = await this.customRuleRepository.save(
+      _customRules.map(title => ({
+        title,
+      })),
+    );
+
+    const detailChoices = await this.detailChoiceRepository.save(
+      _detailChoices.map(({ detailId, explain }) => {
+        const detail = new Detail();
+        detail.id = detailId;
+        return { detail, explain };
+      }),
+    );
 
     const room = await this.roomRepository.create({
       ...rest,
       host,
+      country,
       photos,
-      rules: await Promise.all(
-        rules.map(rule => this.ruleRepository.save(rule)),
-      ),
-      amenities: await this.amenityRepository.findByIds(
-        amenityIds.map(id => +id),
-      ),
+      ruleChoices,
+      customRules,
+      detailChoices,
+      amenities: await this.amenityRepository.findByIds(amenityIds),
     });
-
     return await this.roomRepository.save(room);
   }
 

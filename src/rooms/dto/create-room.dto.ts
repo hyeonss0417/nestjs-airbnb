@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
 import {
-  IsArray,
+  IsBoolean,
   IsEnum,
   IsInt,
   IsNumber,
@@ -39,8 +39,8 @@ export class CreateRoomDto {
   @IsString()
   description: string;
 
-  @IsString()
-  countryId: string;
+  @IsNumber()
+  countryId: number;
 
   // ===== Address =====
   @IsString()
@@ -67,18 +67,37 @@ export class CreateRoomDto {
   // ===== Options =====
   @ValidateNested({ each: true })
   @IsNonPrimitiveArray()
-  @Type(() => CraeteRuleDto)
-  rules?: CraeteRuleDto[];
+  @Type(() => CraeteRuleChoiceDto)
+  ruleChoices: CraeteRuleChoiceDto[];
 
   @IsString({ each: true })
-  amenityIds: string[];
+  customRules?: string[];
+
+  @ValidateNested({ each: true })
+  @IsNonPrimitiveArray()
+  @Type(() => CraeteDetailChoiceDto)
+  detailChoices?: CraeteDetailChoiceDto[];
+
+  @IsNumber({}, { each: true })
+  amenityIds: number[];
   // ====================
 }
 
-export class CraeteRuleDto {
-  @IsString()
-  name: string;
+export class CraeteRuleChoiceDto {
+  @IsNumber()
+  ruleId: number;
+
+  @IsBoolean()
+  isOkay: boolean;
 
   @IsString()
   description?: string;
+}
+
+export class CraeteDetailChoiceDto {
+  @IsNumber()
+  detailId: number;
+
+  @IsString()
+  explain?: string;
 }
