@@ -11,7 +11,7 @@ export class Photo extends CoreEntity {
 
   @Column({ nullable: true })
   @IsString()
-  caption: string;
+  caption?: string;
 
   // Inver Side Relation
   @ManyToOne(

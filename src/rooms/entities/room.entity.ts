@@ -12,11 +12,17 @@ import { Photo } from '../../photos/entities/photo.entity';
 import { Reservation } from '../../reservations/entities/reservation.entity';
 import { Review } from '../../reviews/entities/review.entity';
 import { User } from '../../users/entities/user.entity';
-import { Column, Entity, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { ReserveRoomDTO } from '../dto/reserve-room.dto';
-import { Amenity } from './amenity.entity';
-import { Facility } from './facility.entity';
-import { Rule } from './rule.entity';
+import { AmenityItem } from './amenity.entity';
+import { CustomRule, DetailChoice, RuleChoice } from './rule.entity';
 
 export enum RoomType {
   Apartment = 'Apartment',
@@ -39,7 +45,8 @@ export class Room extends CoreEntity {
   @IsEnum(RoomType)
   roomType: RoomType;
 
-  @Column()
+  @Column({ type: 'int' })
+  @IsInt()
   price: number;
 
   @OneToMany(
@@ -48,7 +55,8 @@ export class Room extends CoreEntity {
   )
   discounts: Discount[];
 
-  @Column({ nullable: true })
+  @Column({ type: 'int', nullable: true })
+  @IsInt()
   cleaningFee: number;
 
   @Column({ type: 'int' })
@@ -110,23 +118,30 @@ export class Room extends CoreEntity {
   // ====================
 
   // ===== Options =====
-  @ManyToMany(
-    type => Facility,
-    facility => facility.rooms,
+  @OneToMany(
+    type => RuleChoice,
+    rule => rule.room,
   )
-  facilities: Facility[];
+  ruleChoices: RuleChoice[];
+
+  @OneToMany(
+    type => CustomRule,
+    desc => desc.room,
+  )
+  customRules: CustomRule[];
+
+  @OneToMany(
+    type => DetailChoice,
+    detail => detail.room,
+  )
+  detailChoices: DetailChoice[];
 
   @ManyToMany(
-    type => Rule,
-    facility => facility.rooms,
+    type => AmenityItem,
+    amenityItem => amenityItem.rooms,
   )
-  rules: Rule[];
-
-  @ManyToMany(
-    type => Amenity,
-    amenity => amenity.rooms,
-  )
-  amenities: Amenity[];
+  @JoinTable()
+  amenities: AmenityItem[];
   // ====================
 
   // Inverse Side Relation
@@ -150,11 +165,18 @@ export class Room extends CoreEntity {
 
   // ===== Domain Methods =====
   reserve(reserveRoomDTO: ReserveRoomDTO, guest: User): Reservation {
-    const reservation = new Reservation({
-      ...reserveRoomDTO,
-      room: this,
-      guest,
-    });
+    const { paymentId, ...reservationData } = reserveRoomDTO;
+
+    const reservation = new Reservation();
+    reservation.room = this;
+    reservation.guests = [guest];
+
+    // reservation = {
+    //   ...reservationData,
+    //   room: this,
+    //   guests: [guest],
+    // };
+
     this.validateReservation(reservation);
     return reservation;
   }

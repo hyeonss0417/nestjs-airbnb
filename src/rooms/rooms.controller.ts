@@ -7,20 +7,26 @@ import {
   Param,
   Delete,
   Req,
+  Request,
 } from '@nestjs/common';
 import { RoomsService } from './rooms.service';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
 import { ReserveRoomDTO } from './dto/reserve-room.dto';
 import { Reservation } from '../reservations/entities/reservation.entity';
+import { Room } from './entities/room.entity';
+import { User } from '../users/entities/user.entity';
 
 @Controller('rooms')
 export class RoomsController {
   constructor(private readonly roomsService: RoomsService) {}
 
   @Post()
-  create(@Body() createRoomDto: CreateRoomDto) {
-    return this.roomsService.create(createRoomDto);
+  async create(
+    @Request() req,
+    @Body() createRoomDto: CreateRoomDto,
+  ): Promise<Room> {
+    return await this.roomsService.create(createRoomDto, req.user as User);
   }
 
   @Get()

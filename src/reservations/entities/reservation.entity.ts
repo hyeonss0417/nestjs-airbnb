@@ -67,19 +67,6 @@ export class Reservation extends CoreEntity {
       this.status === ReservationStatus.ACCEPTED
     );
   }
-
-  constructor(data?: IReservationConstructor) {
-    super();
-    if (data) {
-      const { room, guest, guestCnt, checkIn, checkOut, price } = data;
-      this.room = room;
-      this.guests = [guest];
-      this.guestCnt = guestCnt;
-      this.checkIn = checkIn;
-      this.checkOut = checkOut;
-      this.price = price;
-    }
-  }
 }
 
 interface IReservationConstructor {
