@@ -15,13 +15,12 @@ import {
   Rule,
   RuleChoice,
 } from './entities/rule.entity';
-import { AmenityGroup, Amenity } from './entities/amenity.entity';
+import { AmenityGroup, AmenityItem } from './entities/amenity.entity';
 import { Photo } from '../photos/entities/photo.entity';
 import {
-  CraeteAmenityDTO,
+  CraeteAmenityItemDTO,
   CraeteAmenityGroupDTO,
 } from './dto/create-amenity.dto';
-import { title } from 'process';
 
 @Injectable()
 export class RoomsService {
@@ -34,10 +33,10 @@ export class RoomsService {
     private readonly detailChoiceRepository: Repository<DetailChoice>,
     @InjectRepository(CustomRule)
     private readonly customRuleRepository: Repository<CustomRule>,
-    @InjectRepository(Amenity)
-    private readonly amenityRepository: Repository<Amenity>,
+    @InjectRepository(AmenityItem)
+    private readonly AmenityItemRepository: Repository<AmenityItem>,
     @InjectRepository(AmenityGroup)
-    private readonly amenityGroupRepository: Repository<AmenityGroup>,
+    private readonly AmenityGroupRepository: Repository<AmenityGroup>,
     @InjectRepository(Photo)
     private readonly photoRepository: Repository<Photo>,
     @InjectRepository(Reservation)
@@ -48,7 +47,7 @@ export class RoomsService {
     const {
       countryId,
       photos: _photos,
-      amenityIds,
+      amenityItemIds,
       ruleChoices: _ruleChoices,
       customRules: _customRules,
       detailChoices: _detailChoices,
@@ -91,7 +90,7 @@ export class RoomsService {
       ruleChoices,
       customRules,
       detailChoices,
-      amenities: await this.amenityRepository.findByIds(amenityIds),
+      amenities: await this.AmenityItemRepository.findByIds(amenityItemIds),
     });
     return await this.roomRepository.save(room);
   }
@@ -112,18 +111,20 @@ export class RoomsService {
     return `This action removes a #${id} room`;
   }
 
-  async findAllAmenities(): Promise<Amenity[]> {
-    return await this.amenityRepository.find();
+  async findAllAmenities(): Promise<AmenityItem[]> {
+    return await this.AmenityItemRepository.find();
   }
 
-  async createAmenity(createAmentityDTO: CraeteAmenityDTO): Promise<Amenity> {
-    return await this.amenityRepository.save(createAmentityDTO);
+  async createAmenityItem(
+    createAmentityDTO: CraeteAmenityItemDTO,
+  ): Promise<AmenityItem> {
+    return await this.AmenityItemRepository.save(createAmentityDTO);
   }
 
   async createAmenityGroup(
     createAmenityGroupDTO: CraeteAmenityGroupDTO,
   ): Promise<AmenityGroup> {
-    return await this.amenityGroupRepository.save(createAmenityGroupDTO);
+    return await this.AmenityGroupRepository.save(createAmenityGroupDTO);
   }
 
   async reserve(

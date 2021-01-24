@@ -52,7 +52,7 @@ import * as Joi from 'joi';
             database: process.env.DB_NAME,
           }),
       synchronize: process.env.NODE_ENV !== 'prod',
-      logging: false, // process.env.NODE !== 'dev' && process.env.NODE !== 'prod' && process.env.NODE_ENV !== 'test'
+      logging: true, // process.env.NODE !== 'dev' && process.env.NODE !== 'prod' && process.env.NODE_ENV !== 'test'
       entities: ['dist/**/*.entity{.ts,.js}'],
     }),
     UsersModule,

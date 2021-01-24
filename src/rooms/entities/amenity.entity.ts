@@ -10,10 +10,10 @@ export class AmenityGroup extends CoreEntity {
   name: string;
 
   @OneToMany(
-    type => Amenity,
+    type => AmenityItem,
     amentity => amentity.group,
   )
-  amennities: Amenity[];
+  amennities: AmenityItem[];
 }
 /*
 INSERT INTO nestjs_airbnb_dev.amenitiy_group (name)
@@ -31,7 +31,7 @@ VALUES
 */
 
 @Entity()
-export class Amenity extends CoreEntity {
+export class AmenityItem extends CoreEntity {
   @ManyToOne(
     type => AmenityGroup,
     amenitiesGroup => amenitiesGroup.amennities,
@@ -54,7 +54,7 @@ export class Amenity extends CoreEntity {
 }
 
 /*
-INSERT INTO nestjs_airbnb_dev.amenity (groupId, name, description)
+INSERT INTO nestjs_airbnb_dev.AmenityItem (groupId, name, description)
 VALUES 
 (1, '헤어드라이어', null), 
 (1, '샴푸', null), 

@@ -79,7 +79,7 @@ export class CreateRoomDto {
   detailChoices?: CraeteDetailChoiceDto[];
 
   @IsNumber({}, { each: true })
-  amenityIds: number[];
+  amenityItemIds: number[];
   // ====================
 }
 

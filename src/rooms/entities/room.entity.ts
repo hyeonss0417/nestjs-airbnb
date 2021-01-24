@@ -21,7 +21,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { ReserveRoomDTO } from '../dto/reserve-room.dto';
-import { Amenity } from './amenity.entity';
+import { AmenityItem } from './amenity.entity';
 import { CustomRule, DetailChoice, RuleChoice } from './rule.entity';
 
 export enum RoomType {
@@ -137,11 +137,11 @@ export class Room extends CoreEntity {
   detailChoices: DetailChoice[];
 
   @ManyToMany(
-    type => Amenity,
-    amenity => amenity.rooms,
+    type => AmenityItem,
+    amenityItem => amenityItem.rooms,
   )
   @JoinTable()
-  amenities: Amenity[];
+  amenities: AmenityItem[];
   // ====================
 
   // Inverse Side Relation

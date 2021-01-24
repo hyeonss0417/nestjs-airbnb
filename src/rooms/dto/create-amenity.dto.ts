@@ -5,7 +5,7 @@ export class CraeteAmenityGroupDTO {
   name: string;
 }
 
-export class CraeteAmenityDTO {
+export class CraeteAmenityItemDTO {
   @IsString()
   name: string;
 
