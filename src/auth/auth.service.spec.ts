@@ -3,7 +3,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { MailService } from '../mail/mail.service';
 import { User } from '../users/entities/user.entity';
-import { Repository } from 'typeorm';
 import { AuthService } from './auth.service';
 import { Verification } from './entities/varification.entity';
 import {
@@ -11,8 +10,7 @@ import {
   mockMailService,
   mockRepository,
 } from '../mock/services.mock';
-
-type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
+import { MockRepository } from '../mock/interfaces.mock';
 
 describe('AuthService', () => {
   let service: AuthService;
