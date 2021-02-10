@@ -25,7 +25,7 @@ export class RoomsController {
   async create(
     @Request() req,
     @Body() createRoomDto: CreateRoomDto,
-  ): Promise<Room> {
+  ): Promise<any> {
     return await this.roomsService.create(createRoomDto, req.user as User);
   }
 

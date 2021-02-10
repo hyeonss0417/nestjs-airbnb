@@ -7,19 +7,11 @@ import { Reservation } from '../reservations/entities/reservation.entity';
 import { CustomRule, DetailChoice, RuleChoice } from './entities/rule.entity';
 import { AmenityItem, AmenityGroup } from './entities/amenity.entity';
 import { Photo } from '../photos/entities/photo.entity';
+import { User } from '../users/entities/user.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      Room,
-      RuleChoice,
-      CustomRule,
-      DetailChoice,
-      AmenityItem,
-      AmenityGroup,
-      Photo,
-      Reservation,
-    ]),
+    TypeOrmModule.forFeature([Room, AmenityItem, AmenityGroup, Reservation]),
   ],
   controllers: [RoomsController],
   providers: [RoomsService],
