@@ -2,8 +2,15 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import {
+  initializeTransactionalContext,
+  patchTypeORMRepositoryWithBaseRepository,
+} from 'typeorm-transactional-cls-hooked';
 
 async function bootstrap() {
+  initializeTransactionalContext();
+  patchTypeORMRepositoryWithBaseRepository();
+
   const app = await NestFactory.create(AppModule);
 
   app.useGlobalPipes(

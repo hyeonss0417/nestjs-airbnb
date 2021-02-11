@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectConnection, InjectRepository } from '@nestjs/typeorm';
 import { Reservation } from '../reservations/entities/reservation.entity';
 import { User } from '../users/entities/user.entity';
-import { Connection, Repository, Transaction } from 'typeorm';
+import { Connection, EntityManager, Repository } from 'typeorm';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { ReserveRoomDTO } from './dto/reserve-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
@@ -27,14 +27,20 @@ export class RoomsService {
   constructor(
     @InjectRepository(Room)
     private readonly roomRepository: Repository<Room>,
+    @InjectRepository(RuleChoice)
+    private readonly ruleChoiceRepository: Repository<RuleChoice>,
+    @InjectRepository(DetailChoice)
+    private readonly detailChoiceRepository: Repository<DetailChoice>,
+    @InjectRepository(CustomRule)
+    private readonly customRuleRepository: Repository<CustomRule>,
     @InjectRepository(AmenityItem)
     private readonly AmenityItemRepository: Repository<AmenityItem>,
     @InjectRepository(AmenityGroup)
     private readonly AmenityGroupRepository: Repository<AmenityGroup>,
+    @InjectRepository(Photo)
+    private readonly photoRepository: Repository<Photo>,
     @InjectRepository(Reservation)
     private readonly reservationRepository: Repository<Reservation>,
-    @InjectConnection()
-    private readonly connection: Connection,
   ) {}
 
   async create(createRoomDto: CreateRoomDto, host: User): Promise<any> {
@@ -48,59 +54,37 @@ export class RoomsService {
       ...rest
     } = createRoomDto;
 
-    let result;
-    const queryRunner = this.connection.createQueryRunner();
-
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    try {
-      // TODO: CHECK Whether User is Host or not
-
-      await this.connection.manager.insert(Photo, photos);
-      const { identifiers: ruleChoices } = await this.connection.manager.insert(
-        RuleChoice,
-        _ruleChoices.map(({ ruleId, ...rest }) => ({
-          rule: { id: ruleId },
-          ...rest,
-        })),
-      );
-      const { identifiers: customRules } = await this.connection.manager.insert(
-        CustomRule,
-        _customRules.map(title => ({ title })),
-      );
-      const {
-        identifiers: detailChoices,
-      } = await this.connection.manager.insert(
-        DetailChoice,
-        _detailChoices.map(({ detailId, ...rest }) => ({
-          detail: { id: detailId },
-          ...rest,
-        })),
-      );
-
-      const room = await this.connection.manager.create(Room, {
+    // TODO: CHECK Whether User is Host or not
+    await this.photoRepository.insert(photos);
+    const { identifiers: ruleChoices } = await this.ruleChoiceRepository.insert(
+      _ruleChoices.map(({ ruleId, ...rest }) => ({
+        rule: { id: ruleId },
         ...rest,
-        host,
-        country: { id: countryId },
-        photos,
-        ruleChoices,
-        customRules,
-        detailChoices,
-        amenities: amenityItemIds.map(id => ({ id })),
-      });
+      })),
+    );
+    const { identifiers: customRules } = await this.customRuleRepository.insert(
+      _customRules.map(title => ({ title })),
+    );
+    const {
+      identifiers: detailChoices,
+    } = await this.detailChoiceRepository.insert(
+      _detailChoices.map(({ detailId, ...rest }) => ({
+        detail: { id: detailId },
+        ...rest,
+      })),
+    );
 
-      result = (await this.connection.manager.insert(Room, room)).generatedMaps;
-      await queryRunner.commitTransaction();
-    } catch (err) {
-      // since we have errors lets rollback the changes we made
-      await queryRunner.rollbackTransaction();
-    } finally {
-      // you need to release a queryRunner which was manually instantiated
-      await queryRunner.release();
-    }
-
-    return result;
+    const room = await this.roomRepository.create({
+      ...rest,
+      host,
+      country: { id: countryId },
+      photos,
+      ruleChoices,
+      customRules,
+      detailChoices,
+      amenities: amenityItemIds.map(id => ({ id })),
+    });
+    return (await this.roomRepository.insert(room)).generatedMaps;
   }
 
   findAll() {

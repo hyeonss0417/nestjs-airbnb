@@ -16,12 +16,14 @@ import { ReserveRoomDTO } from './dto/reserve-room.dto';
 import { Reservation } from '../reservations/entities/reservation.entity';
 import { Room } from './entities/room.entity';
 import { User } from '../users/entities/user.entity';
+import { Transactional } from 'typeorm-transactional-cls-hooked';
 
 @Controller('rooms')
 export class RoomsController {
   constructor(private readonly roomsService: RoomsService) {}
 
   @Post()
+  @Transactional()
   async create(
     @Request() req,
     @Body() createRoomDto: CreateRoomDto,
