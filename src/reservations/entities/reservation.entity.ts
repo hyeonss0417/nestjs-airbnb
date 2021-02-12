@@ -1,6 +1,7 @@
 import { IsDate, IsEnum, IsInt, IsNumber } from 'class-validator';
 import { DateDiff, DateRange } from '../../common/datetime.utils';
 import { CoreEntity } from '../../common/entities/core.entity';
+import { dateTransformer } from '../../common/class-validator';
 import { Room } from '../../rooms/entities/room.entity';
 import { User } from '../../users/entities/user.entity';
 import { Column, Entity, JoinTable, ManyToMany, ManyToOne } from 'typeorm';
@@ -19,7 +20,7 @@ export enum ReservationStatus {
 export class Reservation extends CoreEntity {
   @ManyToOne(
     type => Room,
-    room => room.reservatons,
+    room => room.reservations,
   )
   room: Room;
 
@@ -38,11 +39,15 @@ export class Reservation extends CoreEntity {
   @IsEnum(ReservationStatus)
   status: ReservationStatus;
 
-  @Column({ type: 'date' })
+  @Column({
+    transformer: dateTransformer,
+  })
   @IsDate()
   checkIn: Date;
 
-  @Column({ type: 'date' })
+  @Column({
+    transformer: dateTransformer,
+  })
   @IsDate()
   checkOut: Date;
 
@@ -55,10 +60,10 @@ export class Reservation extends CoreEntity {
   }
 
   getStayTerm(): DateRange {
-    const lastNight = new Date();
-    lastNight.setDate(this.checkOut.getDate() - 1);
-
-    return new DateRange(this.checkIn, lastNight);
+    const d = new Date(this.checkOut);
+    // To get the last night, subtract a day from checkOut date.
+    d.setDate(this.checkOut.getDate() - 1);
+    return new DateRange(this.checkIn, d);
   }
 
   isScheduled(): boolean {

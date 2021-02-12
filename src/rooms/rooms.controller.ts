@@ -14,6 +14,7 @@ import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
 import { User } from '../users/entities/user.entity';
 import { Transactional } from 'typeorm-transactional-cls-hooked';
+import { Room } from './entities/room.entity';
 
 @Controller('rooms')
 export class RoomsController {
@@ -25,17 +26,17 @@ export class RoomsController {
     @Request() req,
     @Body() createRoomDto: CreateRoomDto,
   ): Promise<any> {
-    return await this.roomsService.create(createRoomDto, req.user as User);
+    return await this.roomsService.create(req.user as User, createRoomDto);
   }
 
   @Get()
-  findAll() {
-    return this.roomsService.findAll();
+  async findAll(): Promise<Room[]> {
+    return await this.roomsService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.roomsService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return await this.roomsService.findOne(+id);
   }
 
   @Put(':id')

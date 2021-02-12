@@ -1,11 +1,16 @@
-import { DateDiff, DateRange } from '../../common/datetime.utils';
-
+import { IsNumber } from 'class-validator';
+import { IsOnlyDate } from '../../common/class-validator';
 export class CreateReservationDto {
+  @IsNumber()
   roomId: number;
-  guestId: number;
+  @IsNumber()
   guestCnt: number;
-  checkIn: Date;
-  checkOut: Date;
+  @IsOnlyDate()
+  checkIn: string;
+  @IsOnlyDate()
+  checkOut: string;
+  @IsNumber()
   price: number;
+  @IsNumber()
   paymentId: number;
 }

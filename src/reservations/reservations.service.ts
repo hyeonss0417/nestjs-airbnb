@@ -1,15 +1,9 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ReserveRoomDTO } from '../rooms/dto/reserve-room.dto';
 import { Room } from '../rooms/entities/room.entity';
 import { User } from '../users/entities/user.entity';
 import { CreateReservationDto } from './dto/create-reservation.dto';
-import { UpdateReservationDto } from './dto/update-reservation.dto';
 import { Reservation, ReservationStatus } from './entities/reservation.entity';
 
 @Injectable()
@@ -23,22 +17,27 @@ export class ReservationsService {
 
   async reserve(
     guest: User,
-    reserveRoomDTO: ReserveRoomDTO,
+    reserveRoomDTO: CreateReservationDto,
   ): Promise<Reservation> {
     const reservation = this.reservationRepository.create({
+      ...reserveRoomDTO,
       guests: [{ id: guest.id }],
       room: { id: reserveRoomDTO.roomId },
-      ...reserveRoomDTO,
+      checkIn: new Date(reserveRoomDTO.checkIn),
+      checkOut: new Date(reserveRoomDTO.checkOut),
     });
 
-    const room = await this.roomRepository.findOne(reserveRoomDTO.roomId);
+    const room = await this.roomRepository.findOne(reserveRoomDTO.roomId, {
+      relations: ['reservations', 'discounts', 'country'],
+    });
     await room.validateReservation(reservation);
 
+    reservation.status = ReservationStatus.REQUESTED;
     return await this.reservationRepository.save(reservation);
   }
 
-  findAll() {
-    return `This action returns all reservations`;
+  async findAll() {
+    return await this.reservationRepository.find();
   }
 
   async findOne(id: number): Promise<Reservation> {
@@ -49,7 +48,7 @@ export class ReservationsService {
     try {
       const reservation = await this.reservationRepository.findOneOrFail(id);
       reservation.status = ReservationStatus.CANCELED;
-      this.reservationRepository.save(reservation);
+      await this.reservationRepository.save(reservation);
     } catch (e) {
       throw new NotFoundException('존재하지 않는 예약 정보입니다.');
     }

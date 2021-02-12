@@ -20,7 +20,6 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-import { ReserveRoomDTO } from '../dto/reserve-room.dto';
 import { AmenityItem } from './amenity.entity';
 import { CustomRule, DetailChoice, RuleChoice } from './rule.entity';
 
@@ -149,7 +148,7 @@ export class Room extends CoreEntity {
     type => Reservation,
     reservation => reservation.room,
   )
-  reservatons: Reservation[];
+  reservations: Reservation[];
 
   @OneToMany(
     type => Review,
@@ -165,6 +164,15 @@ export class Room extends CoreEntity {
 
   // ===== Domain Methods =====
   validateReservation(reservation: Reservation): boolean {
+    const currentTime = new Date();
+    if (
+      currentTime > reservation.checkIn ||
+      currentTime > reservation.checkOut ||
+      reservation.checkIn >= reservation.checkOut
+    ) {
+      throw new BadRequestException('잘못된 예약 날짜입니다.');
+    }
+
     if (!this.isAccommodable(reservation.getStayTerm())) {
       throw new BadRequestException('예약 불가능한 일정입니다.');
     }
@@ -174,15 +182,18 @@ export class Room extends CoreEntity {
       reservation.guestCnt,
     );
     if (totalPrice != reservation.price) {
-      throw new BadRequestException('가격이 변동되었습니다.');
+      throw new BadRequestException(
+        `가격이 변동되었습니다. (현재가: ${totalPrice})`,
+      );
     }
 
     return true;
   }
 
   private isAccommodable(stayTerm: DateRange): boolean {
-    if (!this.reservatons) throw new InternalServerErrorException();
-    return !this.reservatons
+    if (!this.reservations)
+      throw new InternalServerErrorException("Rservations does't exist.");
+    return !this.reservations
       .filter(reservation => reservation.isScheduled())
       .map(reservation => reservation.getStayTerm())
       .some(otherStayRange => otherStayRange.intersect(stayTerm));
@@ -215,7 +226,8 @@ export class Room extends CoreEntity {
   }
 
   private calculateDiscountFee(price: number, stayDays: number): number {
-    if (!this.discounts) throw new InternalServerErrorException();
+    if (!this.discounts)
+      throw new InternalServerErrorException("Discounts does't exist.");
     return this.discounts
       .map(discount => discount.calculateDiscountFee(price, stayDays))
       .reduce((acc, cur) => Math.max(acc, cur), 0);
@@ -232,7 +244,8 @@ export class Room extends CoreEntity {
     stayDays: number,
     guestCnt: number,
   ): number {
-    if (!this.country) throw new InternalServerErrorException();
+    if (!this.country)
+      throw new InternalServerErrorException("Country does't exist.");
     return this.country.calculateTax(this, price, stayDays, guestCnt);
   }
 }

@@ -1,20 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import { InjectConnection, InjectRepository } from '@nestjs/typeorm';
-import { Reservation } from '../reservations/entities/reservation.entity';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
 import { Connection, EntityManager, Repository } from 'typeorm';
 import { CreateRoomDto } from './dto/create-room.dto';
-import { ReserveRoomDTO } from './dto/reserve-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
 import { Room } from './entities/room.entity';
-import { Country } from '../countries/entities/country.entity';
-import {
-  CustomRule,
-  Detail,
-  DetailChoice,
-  Rule,
-  RuleChoice,
-} from './entities/rule.entity';
+import { CustomRule, DetailChoice, RuleChoice } from './entities/rule.entity';
 import { AmenityGroup, AmenityItem } from './entities/amenity.entity';
 import { Photo } from '../photos/entities/photo.entity';
 import {
@@ -41,7 +32,7 @@ export class RoomsService {
     private readonly photoRepository: Repository<Photo>,
   ) {}
 
-  async create(createRoomDto: CreateRoomDto, host: User): Promise<any> {
+  async create(host: User, createRoomDto: CreateRoomDto): Promise<any> {
     const {
       countryId,
       photos,
@@ -85,12 +76,16 @@ export class RoomsService {
     return (await this.roomRepository.insert(room)).generatedMaps;
   }
 
-  findAll() {
-    return `This action returns all rooms`;
+  async findAll(): Promise<Room[]> {
+    return await this.roomRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} room`;
+  async findOne(id: number): Promise<Room> {
+    try {
+      return await this.roomRepository.findOneOrFail(id);
+    } catch {
+      throw new BadRequestException('존재하지 않는 집입니다.');
+    }
   }
 
   update(id: number, updateRoomDto: UpdateRoomDto) {
