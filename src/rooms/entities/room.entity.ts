@@ -164,24 +164,7 @@ export class Room extends CoreEntity {
   lists: List[];
 
   // ===== Domain Methods =====
-  reserve(reserveRoomDTO: ReserveRoomDTO, guest: User): Reservation {
-    const { paymentId, ...reservationData } = reserveRoomDTO;
-
-    const reservation = new Reservation();
-    reservation.room = this;
-    reservation.guests = [guest];
-
-    // reservation = {
-    //   ...reservationData,
-    //   room: this,
-    //   guests: [guest],
-    // };
-
-    this.validateReservation(reservation);
-    return reservation;
-  }
-
-  private validateReservation(reservation: Reservation): boolean {
+  validateReservation(reservation: Reservation): boolean {
     if (!this.isAccommodable(reservation.getStayTerm())) {
       throw new BadRequestException('예약 불가능한 일정입니다.');
     }

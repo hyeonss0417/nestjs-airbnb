@@ -12,9 +12,6 @@ import {
 import { RoomsService } from './rooms.service';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
-import { ReserveRoomDTO } from './dto/reserve-room.dto';
-import { Reservation } from '../reservations/entities/reservation.entity';
-import { Room } from './entities/room.entity';
 import { User } from '../users/entities/user.entity';
 import { Transactional } from 'typeorm-transactional-cls-hooked';
 
@@ -49,14 +46,5 @@ export class RoomsController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.roomsService.remove(+id);
-  }
-
-  @Post(':id')
-  async reserve(
-    @Param('id') roomId: number,
-    @Req() { user },
-    @Body() reserveRoomDTO: ReserveRoomDTO,
-  ): Promise<Reservation> {
-    return this.roomsService.reserve(roomId, reserveRoomDTO, user);
   }
 }

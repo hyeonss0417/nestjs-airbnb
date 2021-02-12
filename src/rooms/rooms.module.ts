@@ -18,7 +18,6 @@ import { Photo } from '../photos/entities/photo.entity';
       AmenityItem,
       AmenityGroup,
       Photo,
-      Reservation,
     ]),
   ],
   controllers: [RoomsController],

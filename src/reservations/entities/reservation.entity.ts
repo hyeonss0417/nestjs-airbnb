@@ -68,12 +68,3 @@ export class Reservation extends CoreEntity {
     );
   }
 }
-
-interface IReservationConstructor {
-  room: Room;
-  guest: User;
-  guestCnt: number;
-  checkIn: Date;
-  checkOut: Date;
-  price: number;
-}

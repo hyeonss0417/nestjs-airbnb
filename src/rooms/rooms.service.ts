@@ -39,8 +39,6 @@ export class RoomsService {
     private readonly AmenityGroupRepository: Repository<AmenityGroup>,
     @InjectRepository(Photo)
     private readonly photoRepository: Repository<Photo>,
-    @InjectRepository(Reservation)
-    private readonly reservationRepository: Repository<Reservation>,
   ) {}
 
   async create(createRoomDto: CreateRoomDto, host: User): Promise<any> {
@@ -74,7 +72,7 @@ export class RoomsService {
       })),
     );
 
-    const room = await this.roomRepository.create({
+    const room = this.roomRepository.create({
       ...rest,
       host,
       country: { id: countryId },
@@ -117,15 +115,5 @@ export class RoomsService {
     createAmenityGroupDTO: CraeteAmenityGroupDTO,
   ): Promise<AmenityGroup> {
     return await this.AmenityGroupRepository.save(createAmenityGroupDTO);
-  }
-
-  async reserve(
-    roomId: number,
-    reserveRoomDTO: ReserveRoomDTO,
-    guest: User,
-  ): Promise<Reservation> {
-    const room = await this.roomRepository.findOne(roomId);
-    const reservation = room.reserve(reserveRoomDTO, guest);
-    return await this.reservationRepository.create(reservation);
   }
 }
