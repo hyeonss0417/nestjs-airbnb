@@ -43,11 +43,7 @@ export class UsersService {
   }
 
   async findOne(id: number): Promise<User> {
-    try {
-      return await this.userRepository.findOneOrFail({ id });
-    } catch (e) {
-      throw new BadRequestException('존재하지 않는 유저입니다.');
-    }
+    return await this.userRepository.findOneOrFail({ id });
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {

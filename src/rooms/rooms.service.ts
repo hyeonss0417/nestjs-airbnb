@@ -81,11 +81,7 @@ export class RoomsService {
   }
 
   async findOne(id: number): Promise<Room> {
-    try {
-      return await this.roomRepository.findOneOrFail(id);
-    } catch {
-      throw new BadRequestException('존재하지 않는 집입니다.');
-    }
+    return await this.roomRepository.findOneOrFail(id);
   }
 
   update(id: number, updateRoomDto: UpdateRoomDto) {

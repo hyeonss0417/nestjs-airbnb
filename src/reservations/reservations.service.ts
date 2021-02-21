@@ -27,9 +27,12 @@ export class ReservationsService {
       checkOut: new Date(reserveRoomDTO.checkOut),
     });
 
-    const room = await this.roomRepository.findOne(reserveRoomDTO.roomId, {
-      relations: ['reservations', 'discounts', 'country'],
-    });
+    const room = await this.roomRepository.findOneOrFail(
+      reserveRoomDTO.roomId,
+      {
+        relations: ['reservations', 'discounts', 'country'],
+      },
+    );
     await room.validateReservation(reservation);
 
     reservation.status = ReservationStatus.REQUESTED;
@@ -45,12 +48,8 @@ export class ReservationsService {
   }
 
   async cancel(id: number) {
-    try {
-      const reservation = await this.reservationRepository.findOneOrFail(id);
-      reservation.status = ReservationStatus.CANCELED;
-      await this.reservationRepository.save(reservation);
-    } catch (e) {
-      throw new NotFoundException('존재하지 않는 예약 정보입니다.');
-    }
+    const reservation = await this.reservationRepository.findOneOrFail(id);
+    reservation.status = ReservationStatus.CANCELED;
+    await this.reservationRepository.save(reservation);
   }
 }

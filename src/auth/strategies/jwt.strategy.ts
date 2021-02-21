@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { jwtConstants } from '../constants';
@@ -17,7 +17,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(payload: any): Promise<User> {
     const user: User = await this.authService.getUserByPayload(payload);
-    if (!user) throw new BadRequestException('존재하지 않는 유저입니다.');
+    if (!user) throw new NotFoundException('존재하지 않는 유저입니다.');
     // if (!user.verified)
     //   throw new BadRequestException('이메일 인증을 완료해주세요.');
     return user;
