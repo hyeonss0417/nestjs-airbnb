@@ -19,6 +19,7 @@ export class ReservationsController {
   constructor(private readonly reservationsService: ReservationsService) {}
 
   @Post()
+  @Roles(UserRole.Guest)
   @Transactional()
   async reserve(
     @Req() { user },

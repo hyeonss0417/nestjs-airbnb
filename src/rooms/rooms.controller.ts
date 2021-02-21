@@ -15,12 +15,15 @@ import { UpdateRoomDto } from './dto/update-room.dto';
 import { User } from '../users/entities/user.entity';
 import { Transactional } from 'typeorm-transactional-cls-hooked';
 import { Room } from './entities/room.entity';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRole } from '../users/entities/role.entity';
 
 @Controller('rooms')
 export class RoomsController {
   constructor(private readonly roomsService: RoomsService) {}
 
   @Post()
+  @Roles(UserRole.Host)
   @Transactional()
   async create(
     @Request() req,
