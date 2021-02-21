@@ -1,20 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Reservation } from '../reservations/entities/reservation.entity';
 import { User } from '../users/entities/user.entity';
-import { Repository } from 'typeorm';
+import { Connection, EntityManager, Repository } from 'typeorm';
 import { CreateRoomDto } from './dto/create-room.dto';
-import { ReserveRoomDTO } from './dto/reserve-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
 import { Room } from './entities/room.entity';
-import { Country } from '../countries/entities/country.entity';
-import {
-  CustomRule,
-  Detail,
-  DetailChoice,
-  Rule,
-  RuleChoice,
-} from './entities/rule.entity';
+import { CustomRule, DetailChoice, RuleChoice } from './entities/rule.entity';
 import { AmenityGroup, AmenityItem } from './entities/amenity.entity';
 import { Photo } from '../photos/entities/photo.entity';
 import {
@@ -39,14 +30,12 @@ export class RoomsService {
     private readonly AmenityGroupRepository: Repository<AmenityGroup>,
     @InjectRepository(Photo)
     private readonly photoRepository: Repository<Photo>,
-    @InjectRepository(Reservation)
-    private readonly reservationRepository: Repository<Reservation>,
   ) {}
 
-  async create(createRoomDto: CreateRoomDto, host: User) {
+  async create(host: User, createRoomDto: CreateRoomDto): Promise<any> {
     const {
       countryId,
-      photos: _photos,
+      photos,
       amenityItemIds,
       ruleChoices: _ruleChoices,
       customRules: _customRules,
@@ -54,53 +43,45 @@ export class RoomsService {
       ...rest
     } = createRoomDto;
 
-    // TODO: HOST CHECK
-
-    const country = new Country();
-    country.id = countryId;
-
-    const photos = await this.photoRepository.save(_photos);
-    const ruleChoices = await this.ruleChoiceRepository.save(
-      _ruleChoices.map(({ ruleId, isOkay, description }) => {
-        const rule = new Rule();
-        rule.id = ruleId;
-        return { rule, isOkay, description };
-      }),
+    // TODO: CHECK Whether User is Host or not
+    await this.photoRepository.insert(photos);
+    const { identifiers: ruleChoices } = await this.ruleChoiceRepository.insert(
+      _ruleChoices.map(({ ruleId, ...rest }) => ({
+        rule: { id: ruleId },
+        ...rest,
+      })),
     );
-
-    const customRules = await this.customRuleRepository.save(
-      _customRules.map(title => ({
-        title,
+    const { identifiers: customRules } = await this.customRuleRepository.insert(
+      _customRules.map(title => ({ title })),
+    );
+    const {
+      identifiers: detailChoices,
+    } = await this.detailChoiceRepository.insert(
+      _detailChoices.map(({ detailId, ...rest }) => ({
+        detail: { id: detailId },
+        ...rest,
       })),
     );
 
-    const detailChoices = await this.detailChoiceRepository.save(
-      _detailChoices.map(({ detailId, explain }) => {
-        const detail = new Detail();
-        detail.id = detailId;
-        return { detail, explain };
-      }),
-    );
-
-    const room = await this.roomRepository.create({
+    const room = this.roomRepository.create({
       ...rest,
       host,
-      country,
+      country: { id: countryId },
       photos,
       ruleChoices,
       customRules,
       detailChoices,
-      amenities: await this.AmenityItemRepository.findByIds(amenityItemIds),
+      amenities: amenityItemIds.map(id => ({ id })),
     });
-    return await this.roomRepository.save(room);
+    return (await this.roomRepository.insert(room)).generatedMaps;
   }
 
-  findAll() {
-    return `This action returns all rooms`;
+  async findAll(): Promise<Room[]> {
+    return await this.roomRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} room`;
+  async findOne(id: number): Promise<Room> {
+    return await this.roomRepository.findOneOrFail(id);
   }
 
   update(id: number, updateRoomDto: UpdateRoomDto) {
@@ -125,15 +106,5 @@ export class RoomsService {
     createAmenityGroupDTO: CraeteAmenityGroupDTO,
   ): Promise<AmenityGroup> {
     return await this.AmenityGroupRepository.save(createAmenityGroupDTO);
-  }
-
-  async reserve(
-    roomId: number,
-    reserveRoomDTO: ReserveRoomDTO,
-    guest: User,
-  ): Promise<Reservation> {
-    const room = await this.roomRepository.findOne(roomId);
-    const reservation = room.reserve(reserveRoomDTO, guest);
-    return await this.reservationRepository.create(reservation);
   }
 }

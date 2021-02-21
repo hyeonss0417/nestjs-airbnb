@@ -16,6 +16,7 @@ import { Public } from '../auth/decorators/public.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRole } from './entities/role.entity';
 import { DeepPartial } from 'typeorm';
+import { Transactional } from 'typeorm-transactional-cls-hooked';
 
 @Controller('users')
 export class UsersController {
@@ -23,6 +24,7 @@ export class UsersController {
 
   @Public()
   @Post()
+  @Transactional()
   async create(@Body() createUserDto: CreateUserDto): Promise<boolean> {
     return await this.usersService.create(createUserDto);
   }

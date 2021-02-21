@@ -1,34 +1,46 @@
-import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Req,
+} from '@nestjs/common';
 import { ReservationsService } from './reservations.service';
+import { Reservation } from './entities/reservation.entity';
+import { Transactional } from 'typeorm-transactional-cls-hooked';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRole } from '../users/entities/role.entity';
 import { CreateReservationDto } from './dto/create-reservation.dto';
-import { UpdateReservationDto } from './dto/update-reservation.dto';
 
 @Controller('reservations')
 export class ReservationsController {
   constructor(private readonly reservationsService: ReservationsService) {}
 
   @Post()
-  create(@Body() createReservationDto: CreateReservationDto) {
-    return this.reservationsService.create(createReservationDto);
+  @Roles(UserRole.Guest)
+  @Transactional()
+  async reserve(
+    @Req() { user },
+    @Body() reserveRoomDTO: CreateReservationDto,
+  ): Promise<Reservation> {
+    return this.reservationsService.reserve(user, reserveRoomDTO);
   }
 
   @Get()
-  findAll() {
-    return this.reservationsService.findAll();
+  @Roles(UserRole.Admin)
+  async findAll() {
+    return await this.reservationsService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.reservationsService.findOne(+id);
-  }
-
-  @Put(':id')
-  update(@Param('id') id: string, @Body() updateReservationDto: UpdateReservationDto) {
-    return this.reservationsService.update(+id, updateReservationDto);
+  async findOne(@Param('id') id: string) {
+    return await this.reservationsService.findOne(+id);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.reservationsService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return await this.reservationsService.cancel(+id);
   }
 }
