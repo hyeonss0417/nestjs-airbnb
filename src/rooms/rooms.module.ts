@@ -6,7 +6,7 @@ import { Room } from './entities/room.entity';
 import { Reservation } from '../reservations/entities/reservation.entity';
 import { CustomRule, DetailChoice, RuleChoice } from './entities/rule.entity';
 import { AmenityItem, AmenityGroup } from './entities/amenity.entity';
-import { Photo } from '../photos/entities/photo.entity';
+import { Photo } from '../common/entities/photo.entity';
 
 @Module({
   imports: [

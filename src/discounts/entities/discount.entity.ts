@@ -2,7 +2,7 @@ import { IsDate, IsEnum, IsInt } from 'class-validator';
 import { CoreEntity } from '../../common/entities/core.entity';
 import { Room } from '../../rooms/entities/room.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
-import { discountStrategies } from '../discountStrategy';
+import { discountStrategies } from '../strategies/discountStrategy';
 
 export enum DiscountType {
   Week = 'Week',

@@ -1,4 +1,4 @@
-import { DiscountType } from './entities/discount.entity';
+import { DiscountType } from '../entities/discount.entity';
 
 export interface DiscountStrategy {
   isSatisfied: (stayDays: number) => boolean;

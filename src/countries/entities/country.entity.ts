@@ -2,7 +2,7 @@ import { IsEnum } from 'class-validator';
 import { CoreEntity } from '../../common/entities/core.entity';
 import { Room } from '../../rooms/entities/room.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
-import { taxStrategies } from '../taxStrategy';
+import { taxStrategies } from '../strategies/taxStrategy';
 
 export enum CountryName {
   SouthKorea = 'SouthKorea',
@@ -20,6 +20,7 @@ export enum CountryName {
   Netherlands = 'Netherlands',
   Portugal = 'Portugal',
   Switzerland = 'Switzerland',
+  // other countries
 }
 
 @Entity()

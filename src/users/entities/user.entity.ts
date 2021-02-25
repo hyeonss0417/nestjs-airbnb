@@ -1,6 +1,6 @@
 import { IsBoolean, IsDate, IsEmail, IsString } from 'class-validator';
 import { CoreEntity } from '../../common/entities/core.entity';
-import { Payment } from '../../payments/entities/payment.entity';
+import { Payment } from '../../common/entities/payment.entity';
 import { Reservation } from '../../reservations/entities/reservation.entity';
 import { Room } from '../../rooms/entities/room.entity';
 import {
@@ -13,8 +13,8 @@ import {
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { InternalServerErrorException } from '@nestjs/common';
-import { Conversation } from '../../conversations/entities/conversation.entity';
-import { Message } from '../../conversations/entities/message.entity';
+import { Conversation } from '../../common/entities/conversation.entity';
+import { Message } from '../../common/entities/message.entity';
 import { List } from '../../lists/entities/list.entity';
 import { Review } from '../../reviews/entities/review.entity';
 import { Role } from './role.entity';

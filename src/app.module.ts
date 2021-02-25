@@ -7,19 +7,14 @@ import { UsersModule } from './users/users.module';
 import { RoomsModule } from './rooms/rooms.module';
 import { ReservationsModule } from './reservations/reservations.module';
 import { ReviewsModule } from './reviews/reviews.module';
-import { ConversationsModule } from './conversations/conversations.module';
-import { PaymentsModule } from './payments/payments.module';
 import { ListsModule } from './lists/lists.module';
-import { PhotosModule } from './photos/photos.module';
 import { AuthModule } from './auth/auth.module';
-import { DiscountsModule } from './discounts/discounts.module';
 import { CountriesModule } from './countries/countries.module';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
 import { MailModule } from './mail/mail.module';
 import * as Joi from 'joi';
-import { LoggingInterceptor } from './common/interceptors/logging.intercepter';
 
 @Module({
   imports: [
@@ -60,12 +55,8 @@ import { LoggingInterceptor } from './common/interceptors/logging.intercepter';
     RoomsModule,
     ReservationsModule,
     ReviewsModule,
-    ConversationsModule,
-    PaymentsModule,
     ListsModule,
-    PhotosModule,
     CountriesModule,
-    DiscountsModule,
     AuthModule,
     MailModule,
   ],

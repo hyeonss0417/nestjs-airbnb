@@ -3,12 +3,12 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { IsEnum, IsInt, IsNumber, IsString } from 'class-validator';
-import { DateRange } from '../../common/datetime.utils';
+import { DateRange } from '../../common/utils/datetime.utils';
 import { CoreEntity } from '../../common/entities/core.entity';
 import { Country } from '../../countries/entities/country.entity';
 import { Discount } from '../../discounts/entities/discount.entity';
 import { List } from '../../lists/entities/list.entity';
-import { Photo } from '../../photos/entities/photo.entity';
+import { Photo } from '../../common/entities/photo.entity';
 import { Reservation } from '../../reservations/entities/reservation.entity';
 import { Review } from '../../reviews/entities/review.entity';
 import { User } from '../../users/entities/user.entity';

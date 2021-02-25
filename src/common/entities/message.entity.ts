@@ -1,4 +1,4 @@
-import { CoreEntity } from '../../common/entities/core.entity';
+import { CoreEntity } from './core.entity';
 import { User } from '../../users/entities/user.entity';
 import { Column, Entity, JoinTable, ManyToOne } from 'typeorm';
 import { Conversation } from './conversation.entity';
