@@ -1,13 +1,13 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
-import { Connection, EntityManager, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
 import { Room } from './entities/room.entity';
 import { CustomRule, DetailChoice, RuleChoice } from './entities/rule.entity';
 import { AmenityGroup, AmenityItem } from './entities/amenity.entity';
-import { Photo } from '../photos/entities/photo.entity';
+import { Photo } from '../common/entities/photo.entity';
 import {
   CraeteAmenityItemDTO,
   CraeteAmenityGroupDTO,

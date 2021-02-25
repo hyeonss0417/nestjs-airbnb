@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Verification } from '../auth/entities/varification.entity';
-import { MockRepository } from '../mock/interfaces.mock';
-import { mockRepository } from '../mock/services.mock';
+import { MockRepository } from '../common/mocks/interfaces.mock';
+import { mockRepository } from '../common/mocks/services.mock';
 import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
 

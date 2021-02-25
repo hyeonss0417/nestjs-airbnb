@@ -9,8 +9,8 @@ import {
   mockJwtService,
   mockMailService,
   mockRepository,
-} from '../mock/services.mock';
-import { MockRepository } from '../mock/interfaces.mock';
+} from '../common/mocks/services.mock';
+import { MockRepository } from '../common/mocks/interfaces.mock';
 
 describe('AuthService', () => {
   let service: AuthService;

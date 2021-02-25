@@ -7,8 +7,8 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { IsNonPrimitiveArray } from '../../common/class-validator';
-import { CreatePhotoDto } from '../../photos/dto/create-photo.dto';
+import { IsNonPrimitiveArray } from '../../common/middlewares/class-validator';
+import { CreatePhotoDto } from '../../common/dtos/create-photo.dto';
 import { RoomType } from '../entities/room.entity';
 
 export class CreateRoomDto {

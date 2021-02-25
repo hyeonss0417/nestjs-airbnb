@@ -1,5 +1,5 @@
 import { IsNumber } from 'class-validator';
-import { IsOnlyDate } from '../../common/class-validator';
+import { IsOnlyDate } from '../../common/middlewares/class-validator';
 export class CreateReservationDto {
   @IsNumber()
   roomId: number;
