@@ -20,10 +20,9 @@ export class MailService {
       from: 'welcome@nestbnb.com',
       to: address,
       subject: '🔐 Verification Secret for Nestbnb 🔐',
-      html: `Hello! Click <link href={http://${process.env.HOST_NAME}/auth/verification/${code}}>this link</link> to activate your account.`,
+      html: `Hello! Click this <link href={http://${process.env.HOST_NAME}/auth/verification/${code}}>link</link> to activate your account.`,
     };
-    //TODO: Send verification code to email;
     console.log(`${email} - ${code}`);
-    return true;
+    return this.sendMail(email);
   }
 }
