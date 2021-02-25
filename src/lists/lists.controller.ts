@@ -1,34 +1,51 @@
-import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Put,
+  Param,
+  Delete,
+  Req,
+} from '@nestjs/common';
 import { ListsService } from './lists.service';
-import { CreateListDto } from './dto/create-list.dto';
+import { AppendListItemDto, CreateListDto } from './dto/create-list.dto';
 import { UpdateListDto } from './dto/update-list.dto';
+import { List } from './entities/list.entity';
+import { User } from '../users/entities/user.entity';
 
 @Controller('lists')
 export class ListsController {
   constructor(private readonly listsService: ListsService) {}
 
   @Post()
-  create(@Body() createListDto: CreateListDto) {
-    return this.listsService.create(createListDto);
+  async create(
+    @Req() { user }: { user: User },
+    @Body() createListDto: CreateListDto,
+  ): Promise<List> {
+    return await this.listsService.create(user.id, createListDto);
   }
 
   @Get()
-  findAll() {
-    return this.listsService.findAll();
+  async append(
+    @Req() { user }: { user: User },
+    @Body() appendListItemDto: AppendListItemDto,
+  ): Promise<List> {
+    return await this.listsService.append(user.id, appendListItemDto);
+  }
+
+  @Get()
+  async getMyLists(@Req() { user }: { user: User }): Promise<List[]> {
+    return await this.listsService.getListsByUserId(user.id);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.listsService.findOne(+id);
-  }
-
-  @Put(':id')
-  update(@Param('id') id: string, @Body() updateListDto: UpdateListDto) {
-    return this.listsService.update(+id, updateListDto);
+  async findOne(@Param('id') id: string): Promise<List> {
+    return await this.listsService.findOne(+id);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.listsService.remove(+id);
+  async delete(@Param('id') id: string): Promise<any> {
+    return await this.listsService.delete(+id);
   }
 }
