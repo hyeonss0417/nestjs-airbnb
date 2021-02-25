@@ -57,12 +57,6 @@ describe('CountriesService', () => {
       await expect(service.create(countryArgs)).rejects.toThrow(
         EntityNotFoundError,
       );
-
-      expect(countryRepository.findOne).toHaveBeenCalledTimes(1);
-      expect(countryRepository.findOne).toHaveBeenCalledWith(
-        expect.any(Object),
-      );
-      expect(countryRepository.create).toHaveBeenCalledTimes(0);
     });
   });
 
@@ -95,12 +89,6 @@ describe('CountriesService', () => {
       await expect(service.remove(countryArgs.id)).rejects.toThrow(
         EntityNotFoundError,
       );
-
-      expect(countryRepository.findOneOrFail).toHaveBeenCalledTimes(1);
-      expect(countryRepository.findOneOrFail).toHaveBeenCalledWith(
-        countryArgs.id,
-      );
-      expect(countryRepository.delete).toHaveBeenCalledTimes(0);
     });
   });
 });
