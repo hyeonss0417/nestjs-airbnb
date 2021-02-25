@@ -3,14 +3,12 @@ import {
   Get,
   Post,
   Body,
-  Put,
   Param,
   Delete,
   Req,
 } from '@nestjs/common';
 import { ListsService } from './lists.service';
 import { AppendListItemDto, CreateListDto } from './dto/create-list.dto';
-import { UpdateListDto } from './dto/update-list.dto';
 import { List } from './entities/list.entity';
 import { User } from '../users/entities/user.entity';
 
