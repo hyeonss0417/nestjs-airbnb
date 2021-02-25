@@ -13,6 +13,7 @@ import { Transactional } from 'typeorm-transactional-cls-hooked';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRole } from '../users/entities/role.entity';
 import { CreateReservationDto } from './dto/create-reservation.dto';
+import { User } from '../users/entities/user.entity';
 
 @Controller('reservations')
 export class ReservationsController {
@@ -22,7 +23,7 @@ export class ReservationsController {
   @Roles(UserRole.Guest)
   @Transactional()
   async reserve(
-    @Req() { user },
+    @Req() { user }: { user: User },
     @Body() reserveRoomDTO: CreateReservationDto,
   ): Promise<Reservation> {
     return this.reservationsService.reserve(user, reserveRoomDTO);
