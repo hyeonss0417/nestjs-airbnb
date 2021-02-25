@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateCountryDto } from './dto/create-country.dto';
@@ -12,7 +12,9 @@ export class CountriesService {
   ) {}
 
   async create(createCountryDto: CreateCountryDto) {
-    return await this.contryRepository.save(createCountryDto);
+    const exist = await this.contryRepository.findOne(createCountryDto);
+    if (exist) throw new BadRequestException('이미 존재하는 나라입니다.');
+    return await this.contryRepository.create(createCountryDto);
   }
 
   async findAll() {
@@ -20,6 +22,7 @@ export class CountriesService {
   }
 
   async remove(id: number) {
+    await this.contryRepository.findOneOrFail(id);
     return await this.contryRepository.delete(id);
   }
 }

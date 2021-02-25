@@ -1,5 +1,5 @@
-import { Room } from '../rooms/entities/room.entity';
-import { CountryName } from './entities/country.entity';
+import { Room } from '../../rooms/entities/room.entity';
+import { CountryName } from '../entities/country.entity';
 
 interface TaxStrategy {
   calculateTax: (

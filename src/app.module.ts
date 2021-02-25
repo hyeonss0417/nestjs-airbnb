@@ -9,7 +9,6 @@ import { ReservationsModule } from './reservations/reservations.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { ListsModule } from './lists/lists.module';
 import { AuthModule } from './auth/auth.module';
-import { DiscountsModule } from './discounts/discounts.module';
 import { CountriesModule } from './countries/countries.module';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
@@ -58,7 +57,6 @@ import * as Joi from 'joi';
     ReviewsModule,
     ListsModule,
     CountriesModule,
-    DiscountsModule,
     AuthModule,
     MailModule,
   ],
