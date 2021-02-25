@@ -1,3 +1,5 @@
+# Nestbnb [![Build Status](https://travis-ci.org/skyoun97/nestjs-airbnb.svg?branch=main)](https://travis-ci.org/skyoun97/nestjs-airbnb)
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
 </p>
