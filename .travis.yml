@@ -17,7 +17,7 @@ deploy:
     local_dir: dist
     wait_until_deployed: true
     on:
-      branch: master
+      branch: main
 
 # CI 실행 완료 시 메일로 알람
 notifications:
