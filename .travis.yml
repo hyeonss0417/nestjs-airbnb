@@ -1,3 +1,26 @@
 language: node_js
 node_js:
   - 12
+
+before_deploy:
+  - npm run build
+
+deploy:
+  - provider: s3
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
+
+    bucket: nestbnb-build
+    region: ap-northeast-2
+    skip_cleanup: true
+    acl: private
+    local_dir: dist
+    wait_until_deployed: true
+    on:
+      branch: master
+
+# CI 실행 완료 시 메일로 알람
+notifications:
+  email:
+    recipients:
+      - hyeonss0417@gmail.com
