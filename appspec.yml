@@ -2,5 +2,5 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /home/ubuntu/app/nestbnb/zip/
+    destination: /home/ubuntu/nestjs-airbnb/dist/zip/
     overwrite: yes
