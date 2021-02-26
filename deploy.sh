@@ -1,4 +1,12 @@
 #!/bin/bash
+REPOSITORY=/home/ubuntu/app/nestbnb
+PROJECT_NAME=springboot-webservice
+
+echo "> Build 파일 복사"
+
+cp -r $REPOSITORY/zip/* $REPOSITORY/
+
+
 CONTAINER_NAME=nestbnb-api
 APP_NAME=nestbnb-api
 WORDDIR=/usr/src/app
