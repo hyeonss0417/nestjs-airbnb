@@ -4,6 +4,9 @@ node_js:
 
 before_deploy:
   - npm run build
+  - zip -r nestjs-api ./dist
+  - mkdir -p deploy
+  - mv nestjs-api.zip deploy/nestjs-api.zip
 
 deploy:
   - provider: s3
@@ -18,6 +21,20 @@ deploy:
     wait_until_deployed: true
     on:
       branch: main
+
+  - provider: codedeploy
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
+
+    bucket: nestbnb-build
+    key: nestjs-api.zip
+
+    bundle_type: zip
+    application: nestjs-api
+
+    deplyment_group: nestbnb-api-group
+    region: ap-northeast-2
+    wait-until-deployed: true
 
 # CI 실행 완료 시 메일로 알람
 notifications:
