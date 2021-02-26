@@ -4,9 +4,9 @@ node_js:
 
 before_deploy:
   - npm run build
-  - zip -r nestjs-api ./dist
+  - zip -r nestbnb-api ./dist
   - mkdir -p deploy
-  - mv nestjs-api.zip deploy/nestjs-api.zip
+  - mv nestbnb-api.zip deploy/nestbnb-api.zip
 
 deploy:
   - provider: s3
@@ -17,7 +17,7 @@ deploy:
     region: ap-northeast-2
     skip_cleanup: true
     acl: private
-    local_dir: dist
+    local_dir: deploy
     wait_until_deployed: true
     on:
       branch: main
@@ -27,10 +27,10 @@ deploy:
     secret_access_key: $AWS_SECRET_KEY
 
     bucket: nestbnb-build
-    key: nestjs-api.zip
+    key: nestbnb-api.zip
 
     bundle_type: zip
-    application: nestjs-api
+    application: nestbnb-api
 
     deplyment_group: nestbnb-api-group
     region: ap-northeast-2
