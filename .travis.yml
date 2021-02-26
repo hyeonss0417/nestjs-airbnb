@@ -4,7 +4,7 @@ node_js:
 
 before_deploy:
   - npm run build
-  - zip -r nestbnb-api ./dist
+  - zip -r nestbnb-api ./*
   - mkdir -p deploy
   - mv nestbnb-api.zip deploy/nestbnb-api.zip
 
