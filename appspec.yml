@@ -4,3 +4,15 @@ files:
   - source: /
     destination: /home/ubuntu/nestjs-airbnb/zip/
     overwrite: yes
+
+permissions:
+  - object: /
+    pattern: '**'
+    owner: ubuntu
+    group: ubuntu
+
+hooks:
+  ApplicationStart:
+    - location: deploy.sh
+      timeout: 600
+      runas: ubuntu
