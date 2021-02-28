@@ -16,7 +16,7 @@ before_deploy:
     mkdir -p deploy;
     mv nestbnb-api.tar.gz deploy/nestbnb-api.tar.gz;
     fi
-#> /dev/null 2>&1 # -x "./node_modules/*"
+#> /dev/null 2>&1 # -x "./node_modules/*" #
 
 deploy:
   - provider: s3
