@@ -52,7 +52,7 @@ async function bootstrap() {
   await app.listen(3000, () => {
     // Send Ready Event for Zero Downtime Deployment
     if (process.send) process.send('ready');
-    sysLogger.log('Server is running');
+    sysLogger.log('Server is running!');
   });
 
   process.on('SIGINT', () => {

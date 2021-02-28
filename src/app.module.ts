@@ -20,7 +20,7 @@ import * as Joi from 'joi';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env' + process.env.NODE_ENV, // === 'dev' ? '.env.dev' : '.env.test',
+      envFilePath: '.env.' + process.env.NODE_ENV, // === 'dev' ? '.env.dev' : '.env.test',
       //ignoreEnvFile: process.env.NODE_ENV === 'prod',
       validationSchema: Joi.object({
         NODE_ENV: Joi.string()
@@ -47,7 +47,7 @@ import * as Joi from 'joi';
             password: process.env.DB_PASSWORD,
             database: process.env.DB_NAME,
           }),
-      synchronize: process.env.NODE_ENV !== 'prod',
+      synchronize: true, //process.env.NODE_ENV !== 'prod',
       logging: process.env.NODE_ENV === 'dev',
       entities: ['dist/**/*.entity{.ts,.js}'],
     }),

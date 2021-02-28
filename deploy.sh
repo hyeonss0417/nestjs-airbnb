@@ -1,5 +1,6 @@
 #!/bin/bash
-REPOSITORY=/home/ubuntu/nestjs-airbnb/
+REPOSITORY=/home/ubuntu/nestjs-airbnb/zip
+ZIP_FILENAME=nestbnb-api.tar.gz
 CONTAINER_NAME=nestbnb-pm2
 CONTAINER_WORKDIR=/usr/src/app
 APP_NAME=nestbnb-api
@@ -8,8 +9,10 @@ PORT=3000
 
 cd $REPOSITORY
 
-echo "> Build 파일 복사"
-cp -r $REPOSITORY/zip/* $REPOSITORY/
+echo "> Dockerfile 압축 해제"
+tar xvfzp ./$ZIP_FILENAME Dockerfile
+
+#cp -r $REPOSITORY/zip/* $REPOSITORY/
 
 echo "> 도커 이미지가 존재하는지 확인"
 IMAGE_ID=$(docker images | grep $IMAGE_NAME | awk '{print $3}')
@@ -29,11 +32,14 @@ if [ -z "$CONTAINER_ID" ]; then
 # 컨테이너가 실행중인 경우 무중단 배포
 else
     echo "> 무중단 배포 시작"
-    docker cp $REPOSITORY/dist $CONTAINER_NAME:$CONTAINER_WORKDIR/dist
-    docker cp $REPOSITORY/package.json $CONTAINER_NAME:$CONTAINER_WORKDIR/package.json
-    #docekr exec -it $CONTAINER_NAME yarn install
-    docker cp $REPOSITORY/node_modules $CONTAINER_NAME:$CONTAINER_WORKDIR/node_modules
-    docekr exec -it $CONTAINER_NAME pm2 reload $APP_NAME
+    docker cp $REPOSITORY/$ZIP_FILENAME $CONTAINER_NAME:$CONTAINER_WORKDIR/../
+    docker exec -it bnb tar -xvzf $CONTAINER_WORKDIR/../$ZIP_FILENAME -C $CONTAINER_WORKDIR/ > /dev/null 2>&1
+
+    #docker cp $REPOSITORY/node_modules/. $CONTAINER_NAME:$CONTAINER_WORKDIR/node_modules
+    #docker cp $REPOSITORY/dist/. $CONTAINER_NAME:$CONTAINER_WORKDIR/dist
+    #docker cp $REPOSITORY/package.json $CONTAINER_NAME:$CONTAINER_WORKDIR/package.json
+    #docekr exec -it $CONTAINER_NAME npm install
+    #docekr exec -it $CONTAINER_NAME pm2 reload $APP_NAME
 fi
 
 echo "> 배포 상태 확인"
