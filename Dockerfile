@@ -4,7 +4,6 @@ FROM node:12-slim
 WORKDIR /usr/src/app
 # 의존성 설치
 RUN yarn global add pm2
-RUN pm2 install typescript
 
 # 의존성 라이브러리 설치
 ADD package.json ./
