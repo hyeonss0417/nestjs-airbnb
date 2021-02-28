@@ -5,15 +5,15 @@ node_js:
 # 배포 전 빌드하기
 before_deploy:
   - if ! [[ $TRAVIS_TAG ]]; then
-  -   export BEFORE_DEPLOY_RUN=1; &&
-  -   npm run build &&
-  -   zip -r nestbnb-api ./* /dev/null 2>&1 &&
-  -   mkdir -p deploy &&
-  -   mv nestbnb-api.zip deploy/nestbnb-api.zip
+  - export BEFORE_DEPLOY_RUN=1; &&
+  - npm run build &&
+  - zip -r nestbnb-api ./* /dev/null 2>&1 &&
+  - mkdir -p deploy &&
+  - mv nestbnb-api.zip deploy/nestbnb-api.zip
   - fi
 #> /dev/null 2>&1 # -x "./node_modules/*"
 
-  deploy:
+deploy:
   - provider: s3
     access_key_id: $AWS_ACCESS_KEY
     secret_access_key: $AWS_SECRET_KEY
