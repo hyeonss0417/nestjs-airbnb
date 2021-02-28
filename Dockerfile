@@ -8,7 +8,8 @@ RUN pm2 install typescript
 
 # 의존성 라이브러리 설치
 ADD package.json ./
-RUN yarn install
+# RUN yarn install
+ADD ./node_modules ./node_modules
 
 # 소스 추가
 ADD ecosystem.config.js ./
