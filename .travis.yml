@@ -35,7 +35,7 @@ deploy:
     bucket: nestbnb-build
     key: nestbnb-api.tar.gz
 
-    #bundle_type: zip
+    bundle_type: tgz
     application: nestbnb-api
 
     deplyment_group: nestbnb-api-group
