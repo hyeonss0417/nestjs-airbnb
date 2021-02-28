@@ -8,7 +8,6 @@ RUN yarn global add pm2
 # 의존성 라이브러리 설치
 ADD package*.json ./
 ADD ./node_modules ./node_modules
-RUN npm i bcrypt
 
 # 소스 추가
 ADD ecosystem.config.js ./
