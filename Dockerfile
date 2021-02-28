@@ -20,4 +20,4 @@ ADD .env.* ./
 EXPOSE 3000
 
 # 실행 명령
-CMD npm run pm2:prod && pm2 logs
+CMD npm run pm2:prod & pm2 logs
