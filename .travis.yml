@@ -12,6 +12,7 @@ before_deploy:
     mv nestbnb-api.tar.gz deploy/nestbnb-api.tar.gz;
     fi
 #> /dev/null 2>&1 # -x "./node_modules/*"
+
 #zip -r nestbnb-api ./* /dev/null 2>&1 &&
 
 deploy:
