@@ -10,6 +10,7 @@ before_deploy:
     tar -zcvf app.tar.gz .// > /dev/null 2>&1;
     mkdir -p pre-deploy;
     mv app.tar.gz pre-deploy/app.tar.gz;
+    mv appspec.yml pre-deploy/appspec.yml;
     tar -zcvf nestbnb-api.tar.gz ./pre-deploy;
     mkdir -p deploy;
     mv nestbnb-api.tar.gz deploy/nestbnb-api.tar.gz;
