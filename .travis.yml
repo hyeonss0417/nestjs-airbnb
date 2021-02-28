@@ -3,12 +3,16 @@ node_js:
   - 12
 
 before_deploy:
-  - npm run build
-  - zip -r nestbnb-api ./* > /dev/null 2>&1 #> /dev/null 2>&1 # -x "./node_modules/*"
-  - mkdir -p deploy
-  - mv nestbnb-api.zip deploy/nestbnb-api.zip
+  - >
+    if ! [[ $TRAVIS_TAG ]]; then
+      export BEFORE_DEPLOY_RUN=1;
+      npm run build
+      zip -r nestbnb-api ./* /dev/null 2>&1 #> /dev/null 2>&1 # -x "./node_modules/*"
+      mkdir -p deploy
+      mv nestbnb-api.zip deploy/nestbnb-api.zip
+    fi
 
-deploy:
+  deploy:
   - provider: s3
     access_key_id: $AWS_ACCESS_KEY
     secret_access_key: $AWS_SECRET_KEY
