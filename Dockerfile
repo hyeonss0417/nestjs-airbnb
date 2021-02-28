@@ -5,7 +5,7 @@ WORKDIR /usr/src/app
 # 의존성 설치
 RUN yarn global add pm2
 
-ADD ./nestbnb-api.tar.gz ./
+ADD ./app.tar.gz ./
 # 의존성 라이브러리 설치
 #ADD package*.json ./
 #ADD ./node_modules.zip ./node_modules
@@ -13,7 +13,7 @@ RUN npm i bcrypt
 
 # 소스 추가
 #ADD ecosystem.config.js ./
-#ADD .env.* ./
+ADD .env.* ./
 #ADD ./dist ./dist
 
 # 포트 매핑

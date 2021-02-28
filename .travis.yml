@@ -11,13 +11,12 @@ before_deploy:
     mkdir -p pre-deploy;
     mv app.tar.gz pre-deploy/app.tar.gz;
     mv appspec.yml pre-deploy/appspec.yml;
+    mv deploy.sh pre-deploy/deploy.sh;
     tar -zcvf nestbnb-api.tar.gz ./pre-deploy;
     mkdir -p deploy;
     mv nestbnb-api.tar.gz deploy/nestbnb-api.tar.gz;
     fi
 #> /dev/null 2>&1 # -x "./node_modules/*"
-
-#zip -r nestbnb-api ./* /dev/null 2>&1 &&
 
 deploy:
   - provider: s3

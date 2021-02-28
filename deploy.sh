@@ -1,6 +1,6 @@
 #!/bin/bash
 REPOSITORY=/home/ubuntu/nestjs-airbnb/zip
-ZIP_FILENAME=nestbnb-api.tar.gz
+ZIP_FILENAME=app.tar.gz
 CONTAINER_NAME=nestbnb-pm2
 CONTAINER_WORKDIR=/usr/src/app
 APP_NAME=nestbnb-api
@@ -9,8 +9,11 @@ PORT=3000
 
 cd $REPOSITORY
 
-echo "> Dockerfile 압축 해제"
-tar xvfzp ./$ZIP_FILENAME Dockerfile
+echo "> Dockerfile 가져오기"
+tar xvfzp ./$ZIP_FILENAME ./Dockerfile
+
+echo "> Env file 가져오기"
+cp ../.env.* ./
 
 #cp -r $REPOSITORY/zip/* $REPOSITORY/
 
@@ -27,7 +30,7 @@ if [ -z "$CONTAINER_ID" ]; then
     echo "> 컨테이너 실행"
     docker rm -f $CONTAINER_NAME
     docker build -t $IMAGE_NAME:latest .
-    docker rmi $(docker images -f "dangling=true" -q)
+    docker rmi -f $(docker images -f "dangling=true" -q)
     docker run -d --name $CONTAINER_NAME -p $PORT:$PORT $IMAGE_NAME
 # 컨테이너가 실행중인 경우 무중단 배포
 else
@@ -43,6 +46,6 @@ else
 fi
 
 echo "> 배포 상태 확인"
-docekr exec -it $CONTAINER_NAME pm2 list | grep $APP_NAME
+docker exec -it $CONTAINER_NAME pm2 list | grep $APP_NAME
 
 echo "> 배포 완료"
