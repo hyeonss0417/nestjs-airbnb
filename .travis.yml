@@ -7,7 +7,10 @@ before_deploy:
   - if ! [[ $BEFORE_DEPLOY_RUN ]]; then
     export BEFORE_DEPLOY_RUN=1;
     npm run build;
-    tar -zcvf nestbnb-api.tar.gz .// > /dev/null 2>&1;
+    tar -zcvf pre-nestbnb-api.tar.gz .// > /dev/null 2>&1;
+    mkdir -p pre-deploy;
+    mv pre-nestbnb-api.tar.gz pre-deploy/nestbnb-api.tar.gz;
+    tar -zcvf nestbnb-api.tar.gz ./pre-deploy
     mkdir -p deploy;
     mv nestbnb-api.tar.gz deploy/nestbnb-api.tar.gz;
     fi
