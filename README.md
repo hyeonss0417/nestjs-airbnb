@@ -28,50 +28,22 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+<p> Nestbnb는 숙박 예약 서비스인 Airbnb의 Back-end 파트를 NestJS로 클론코딩한 개인프로젝트입니다.</p>
+<p> NestJS를 능숙하게 다루고 Travis CI, AWS CodeDeploy, EC2, Docker, PM2 를 이용한 배포 환경을 구성 해보기 위해 시작한 프로젝트입니다. 단순 API 개발뿐만 아니라 최적화, 보안, 유지보수의 관점에서 생각하여 보다 완성도 있는 API를 만들고자 하였습니다.</p>
 
-## Installation
+## Tech Stack
 
-```bash
-$ npm install
-```
+**Front-end** `Insomnia`
 
-## Running the app
+**Back-end** `TypeScript` `NestJS` `TpypeORM` `MySQL`
 
-```bash
-# development
-$ npm run start
+**DevOps** `Travis-ci` `AWS CodeDeploy` `AWS S3` `AWS EC2` `Docker` `PM2`
 
-# watch mode
-$ npm run start:dev
 
-# production mode
-$ npm run start:prod
-```
+## Content
+숙박 예약 서비스인 Airbnb의 숙소 등록, 숙소 예약, 할인금액 계산, 세금계산, 숙소 저장, 리뷰 기능 구현하였습니다.
 
-## Test
+## More..
+https://www.notion.so/hyeonss/Back-end-Airbnb-a47711cbbde14b778c36cad9f4342468
 
-```bash
-# unit tests
-$ npm run test
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
