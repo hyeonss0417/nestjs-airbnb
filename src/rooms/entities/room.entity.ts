@@ -8,7 +8,7 @@ import { CoreEntity } from '../../common/entities/core.entity';
 import { Country } from '../../countries/entities/country.entity';
 import { Discount } from '../../discounts/entities/discount.entity';
 import { List } from '../../lists/entities/list.entity';
-import { Photo } from '../../common/entities/photo.entity';
+import { Photo } from '../../photos/entries/photo.entity';
 import { Reservation } from '../../reservations/entities/reservation.entity';
 import { Review } from '../../reviews/entities/review.entity';
 import { User } from '../../users/entities/user.entity';
@@ -50,7 +50,7 @@ export class Room extends CoreEntity {
 
   @OneToMany(
     type => Discount,
-    discount => discount.rooms,
+    discount => discount.room,
   )
   discounts: Discount[];
 
@@ -190,15 +190,6 @@ export class Room extends CoreEntity {
     return true;
   }
 
-  private isAccommodable(stayTerm: DateRange): boolean {
-    if (!this.reservations)
-      throw new InternalServerErrorException("Rservations does't exist.");
-    return !this.reservations
-      .filter(reservation => reservation.isScheduled())
-      .map(reservation => reservation.getStayTerm())
-      .some(otherStayRange => otherStayRange.intersect(stayTerm));
-  }
-
   calculateTotalPrice(stayDays: number, guestCnt: number): number {
     return this.calculatePriceInDetail(stayDays, guestCnt).totalPrice;
   }
@@ -223,6 +214,15 @@ export class Room extends CoreEntity {
       taxFee,
       totalPrice,
     };
+  }
+
+  private isAccommodable(stayTerm: DateRange): boolean {
+    if (!this.reservations)
+      throw new InternalServerErrorException("Rservations does't exist.");
+    return !this.reservations
+      .filter(reservation => reservation.isScheduled())
+      .map(reservation => reservation.getStayTerm())
+      .some(otherStayRange => otherStayRange.intersect(stayTerm));
   }
 
   private calculateDiscountFee(price: number, stayDays: number): number {
