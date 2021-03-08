@@ -14,6 +14,8 @@ import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
 import { MailModule } from './mail/mail.module';
+import { PhotosModule } from './photos/photos.module';
+import { DiscountsModule } from './discounts/discounts.module';
 import * as Joi from 'joi';
 
 @Module({
@@ -59,6 +61,8 @@ import * as Joi from 'joi';
     CountriesModule,
     AuthModule,
     MailModule,
+    PhotosModule,
+    DiscountsModule,
   ],
   controllers: [AppController],
   providers: [
