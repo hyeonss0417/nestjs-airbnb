@@ -14,7 +14,7 @@ export class CountriesService {
   async create(createCountryDto: CreateCountryDto) {
     const exist = await this.contryRepository.findOne(createCountryDto);
     if (exist) throw new BadRequestException('이미 존재하는 나라입니다.');
-    return await this.contryRepository.create(createCountryDto);
+    return await this.contryRepository.insert(createCountryDto);
   }
 
   async findAll() {
