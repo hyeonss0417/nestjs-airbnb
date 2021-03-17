@@ -6,32 +6,26 @@ import {
   initializeTransactionalContext,
   patchTypeORMRepositoryWithBaseRepository,
 } from 'typeorm-transactional-cls-hooked';
-import { LoggingInterceptor } from './common/interceptors/logging.intercepter';
-import { EntityNotFoundExceptionFilter } from './common/filters/entity-not-found-exception.filter';
 
 async function bootstrap() {
-  const sysLogger = new Logger('System', true);
-  let isDisableKeepAlive = false;
-
-  initializeTransactionalContext();
-  patchTypeORMRepositoryWithBaseRepository();
-
   const app = await NestFactory.create(AppModule, {
     logger: ['log', 'error', 'warn'], //['log', 'error', 'warn', 'debug', 'verbose']
   });
 
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-    }),
-  );
+  // initializeTransactionalContext();
+  // patchTypeORMRepositoryWithBaseRepository();
+
+  const options = new DocumentBuilder()
+    .setTitle('Nestbnb Backend')
+    .setDescription('This is Nestbnb Backend API')
+    .setVersion('1.0')
+    .addTag('Airbnb')
+    .build();
+
+  const document = SwaggerModule.createDocument(app, options);
+  SwaggerModule.setup('api', app, document);
 
   app.enableCors();
-
-  app.useGlobalInterceptors(new LoggingInterceptor());
-  app.useGlobalFilters(new EntityNotFoundExceptionFilter());
 
   app.use((req, res, next) => {
     if (isDisableKeepAlive) {
@@ -40,14 +34,8 @@ async function bootstrap() {
     next();
   });
 
-  const options = new DocumentBuilder()
-    .setTitle('Nestbnb Backend')
-    .setDescription('This is Nestbnb Backend API')
-    .setVersion('1.0')
-    .addTag('Airbnb')
-    .build();
-  const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('api', app, document);
+  const sysLogger = new Logger('System', true);
+  let isDisableKeepAlive = false;
 
   await app.listen(3000, () => {
     // Send Ready Event for Zero Downtime Deployment
