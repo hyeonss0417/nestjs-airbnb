@@ -14,6 +14,7 @@ import {
 import { DiscountType } from '../discounts/entities/discount.entity';
 import { PhotosService } from '../photos/photos.service';
 import { DiscountsService } from '../discounts/discounts.service';
+import { ParallelAsync } from '../common/utils/async.utils';
 
 @Injectable()
 export class RoomsService {
@@ -58,7 +59,7 @@ export class RoomsService {
 
     // TODO: CHECK Whether User is Host or not
 
-    await Promise.all([
+    const parallelAsync = new ParallelAsync([
       this.photosService.insertPhotos(
         photos.map(photo => ({ ...photo, room: { id: room.id } })),
       ),
@@ -92,6 +93,7 @@ export class RoomsService {
       ),
     ]);
 
+    await parallelAsync.done();
     return room;
   }
 
