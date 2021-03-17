@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { jwtConstants } from '../constants';
+import { jwtConstants } from '../../common/constants/auth.constants';
 import { AuthService } from '../auth.service';
 import { User } from '../../users/entities/user.entity';
 

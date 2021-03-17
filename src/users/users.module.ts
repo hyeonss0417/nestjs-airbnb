@@ -6,9 +6,14 @@ import { User } from './entities/user.entity';
 import { Role } from './entities/role.entity';
 import { Verification } from '../auth/entities/varification.entity';
 import { MailModule } from '../mail/mail.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Role, Verification]), MailModule],
+  imports: [
+    AuthModule,
+    TypeOrmModule.forFeature([User, Role, Verification]),
+    MailModule,
+  ],
   controllers: [UsersController],
   providers: [UsersService],
   exports: [UsersService],
