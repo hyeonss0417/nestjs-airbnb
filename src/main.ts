@@ -2,18 +2,11 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import {
-  initializeTransactionalContext,
-  patchTypeORMRepositoryWithBaseRepository,
-} from 'typeorm-transactional-cls-hooked';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: ['log', 'error', 'warn'], //['log', 'error', 'warn', 'debug', 'verbose']
   });
-
-  // initializeTransactionalContext();
-  // patchTypeORMRepositoryWithBaseRepository();
 
   const options = new DocumentBuilder()
     .setTitle('Nestbnb Backend')

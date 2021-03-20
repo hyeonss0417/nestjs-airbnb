@@ -5,7 +5,7 @@ import { AppModule } from '../src/app.module';
 import { CreateUserDto } from '../src/users/dto/create-user.dto';
 import { SignInUserDTO } from '../src/users/dto/sign-in-user.dto';
 import { UpdateUserDto } from '../src/users/dto/update-user.dto';
-import { RestApiTest } from './common/api-test.common';
+import { RestApiTest, wrapper } from './common/api-test.common';
 import { isUser, isArrayOf } from './common/validation.common';
 
 const adminUser: CreateUserDto = {
@@ -44,8 +44,9 @@ describe('Users (e2e)', () => {
   });
 
   describe('sign-up', () => {
-    const request = (user: CreateUserDto) =>
-      apiTest.request({ method: 'POST', url: '/users/sign-up', body: user });
+    const request = wrapper(() =>
+      apiTest.bodyCurrying<CreateUserDto>('POST')('/users/sign-up')(),
+    );
 
     it('should create guest account', () => {
       return request(guestUser)
@@ -93,8 +94,9 @@ describe('Users (e2e)', () => {
   const guestId = 1,
     adminId = 2;
   describe('sign-in', () => {
-    const request = (user: SignInUserDTO) =>
-      apiTest.request({ method: 'POST', url: '/users/sign-in', body: user });
+    const request = wrapper(() =>
+      apiTest.bodyCurrying<SignInUserDTO>('POST')('/users/sign-in')(),
+    );
 
     it('should sign guest user in', () => {
       return request({ email: guestUser.email, password: guestUser.password })
@@ -135,8 +137,7 @@ describe('Users (e2e)', () => {
   });
 
   describe('getAllUsers', () => {
-    const request = (authToken: string) =>
-      apiTest.request({ method: 'GET', url: '/users', authToken });
+    const request = wrapper(() => apiTest.getCurrying('/users'));
 
     it('should return all users', () => {
       return request(adminToken)
@@ -144,7 +145,7 @@ describe('Users (e2e)', () => {
         .expect(res => isArrayOf(res.body, isUser));
     });
     it('should fail if token is invalid', () => {
-      return request('')
+      return request()
         .expect(401)
         .expect(res =>
           expect(res.body).toHaveProperty('message', '로그인이 필요합니다'),
@@ -160,8 +161,7 @@ describe('Users (e2e)', () => {
   });
 
   describe('getProfile', () => {
-    const request = (authToken: string) =>
-      apiTest.request({ method: 'GET', url: '/users/profile', authToken });
+    const request = wrapper(() => apiTest.getCurrying('/users/profile'));
 
     it(`should return user's profile`, () => {
       return request(adminToken)
@@ -179,8 +179,8 @@ describe('Users (e2e)', () => {
   });
 
   describe('getOtherProfile', () => {
-    const request = (id: number) =>
-      apiTest.request({ method: 'GET', url: `/users/${id}` });
+    const request = (id: number) => apiTest.getCurrying(`/users/${id}`)();
+
     it(`should return user's profile`, () => {
       return request(guestId)
         .expect(200)
@@ -189,27 +189,22 @@ describe('Users (e2e)', () => {
   });
 
   describe('updateUser', () => {
-    const request = (id: number, body: UpdateUserDto, authToken: string) =>
-      apiTest.request({
-        method: 'PATCH',
-        url: `/users/${id}`,
-        body,
-        authToken,
-      });
+    const request = (id: number) =>
+      apiTest.bodyCurrying<UpdateUserDto>('PATCH')(`/users/${id}`)(guestToken);
 
     it('should update user profile', () => {
-      return request(
-        guestId,
-        { bio: 'Hi~', firstName: 'Gil-dong', lastName: 'Hong' },
-        guestToken,
-      ).expect(200);
+      return request(guestId)({
+        bio: 'Hi~',
+        firstName: 'Gil-dong',
+        lastName: 'Hong',
+      }).expect(200);
     });
     it('should fail if other user is trying to update profile', () => {
-      return request(
-        adminId,
-        { bio: 'Hi~', firstName: 'Gil-dong', lastName: 'Hong' },
-        guestToken,
-      )
+      return request(adminId)({
+        bio: 'Hi~',
+        firstName: 'Gil-dong',
+        lastName: 'Hong',
+      })
         .expect(401)
         .expect(res =>
           expect(res.body).toHaveProperty(

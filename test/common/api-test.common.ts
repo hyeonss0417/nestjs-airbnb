@@ -2,15 +2,15 @@ import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { IGraphQLRequest, IRestRequest, RequestType } from './test.interface';
 
-export class ApiTest {
+export abstract class ApiTest {
   app: INestApplication;
   authHeader = 'Authorization';
   authPrefix = 'Bearer';
 
   constructor(app: INestApplication, authHeader?: string, authPrefix?: string) {
     this.app = app;
-    if (authHeader) this.authHeader = authHeader;
-    if (authPrefix) this.authPrefix = authPrefix;
+    this.authHeader = this.authHeader || authHeader;
+    this.authPrefix = this.authPrefix || authPrefix;
   }
 
   base() {
@@ -26,9 +26,19 @@ export class ApiTest {
     if (method === 'DELETE') return base.delete(url);
   }
 
-  setAuthToken(test: request.Test, authToken: string) {
-    return test.set(this.authHeader, `${this.authPrefix} ${authToken}`);
+  setHeader(test: request.Test, field: string, val: string) {
+    return test.set(field, val);
   }
+
+  setAuthToken(test: request.Test, authToken: string) {
+    return this.setHeader(
+      test,
+      this.authHeader,
+      `${this.authPrefix} ${authToken}`,
+    );
+  }
+
+  abstract request(req: any): request.Test;
 }
 
 export class RestApiTest extends ApiTest {
@@ -41,6 +51,16 @@ export class RestApiTest extends ApiTest {
     if (authToken) base = this.setAuthToken(base, authToken);
     if (body) return base.send(body);
     return base.send();
+  }
+
+  getCurrying(url: string) {
+    return (authToken?: string) =>
+      this.request({ method: 'GET', url, authToken });
+  }
+
+  bodyCurrying<BodyType>(method: RequestType) {
+    return (url: string) => (authToken?: string) => (body?: BodyType) =>
+      this.request({ url, method, authToken, body });
   }
 }
 
@@ -58,4 +78,10 @@ export class GraphQLApiTest extends ApiTest {
       .send({ query })
       .expect(res => expect(res.body.errors).toBeUndefined());
   }
+}
+
+export function wrapper<T extends (...args: any[]) => any>(func: () => T): T {
+  return <T>((...args: any[]) => {
+    return func()(...args);
+  });
 }
