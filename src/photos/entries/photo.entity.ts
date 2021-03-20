@@ -1,5 +1,5 @@
 import { IsString } from 'class-validator';
-import { CoreEntity } from './core.entity';
+import { CoreEntity } from '../../common/entities/core.entity';
 import { Room } from '../../rooms/entities/room.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
 

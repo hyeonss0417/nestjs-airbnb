@@ -1,7 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Photo } from '../common/entities/photo.entity';
+import { Photo } from '../photos/entries/photo.entity';
 import { mockRepository } from '../common/mocks/services.mock';
+import { Discount } from '../discounts/entities/discount.entity';
 import { AmenityGroup, AmenityItem } from './entities/amenity.entity';
 import { Room } from './entities/room.entity';
 import { CustomRule, DetailChoice, RuleChoice } from './entities/rule.entity';
@@ -36,10 +37,6 @@ describe('RoomsService', () => {
         },
         {
           provide: getRepositoryToken(AmenityGroup),
-          useValue: mockRepository(),
-        },
-        {
-          provide: getRepositoryToken(Photo),
           useValue: mockRepository(),
         },
       ],

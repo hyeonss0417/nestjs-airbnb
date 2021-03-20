@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
 import { Verification } from '../auth/entities/varification.entity';
 import { Repository } from 'typeorm';
-import { IPayload } from './auth.inferfaces';
+import { IPayload } from '../common/interfaces/auth.inferfaces';
 
 @Injectable()
 export class AuthService {
@@ -16,25 +16,9 @@ export class AuthService {
     private readonly verificationRepository: Repository<Verification>,
   ) {}
 
-  async validateUser(email: string, password: string): Promise<IPayload> {
-    const user = await this.userRepository.findOne(
-      { email },
-      { select: ['id', 'email', 'password'], loadEagerRelations: true },
-    );
-
-    if (user && (await user.checkPassword(password))) {
-      const { id, email, password } = user;
-      return { id, email };
-    }
-
-    throw new BadRequestException('아이디 또는 비밀번호가 틀렸습니다.');
-  }
-
-  login(user: IPayload) {
+  getAccessToken(user: IPayload): string {
     const payload = { id: user.id, email: user.email };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
+    return this.jwtService.sign(payload);
   }
 
   async getUserByPayload(payload: IPayload): Promise<User> {

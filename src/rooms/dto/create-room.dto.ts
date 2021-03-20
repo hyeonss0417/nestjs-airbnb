@@ -4,11 +4,12 @@ import {
   IsEnum,
   IsInt,
   IsNumber,
+  IsOptional,
   IsString,
   ValidateNested,
 } from 'class-validator';
 import { IsNonPrimitiveArray } from '../../common/middlewares/class-validator';
-import { CreatePhotoDto } from '../../common/dtos/create-photo.dto';
+import { CreatePhotoDto } from '../../photos/dtos/create-photo.dto';
 import { RoomType } from '../entities/room.entity';
 
 export class CreateRoomDto {
@@ -57,6 +58,14 @@ export class CreateRoomDto {
 
   @IsString()
   addressZipCode: string;
+
+  @IsNumber()
+  @IsOptional()
+  weekDiscountRate: number;
+
+  @IsNumber()
+  @IsOptional()
+  monthDiscountRate: number;
 
   // ===============
   @ValidateNested({ each: true })

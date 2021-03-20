@@ -20,7 +20,7 @@ export class Discount extends CoreEntity {
     type => Room,
     room => room.discounts,
   )
-  rooms: Room;
+  room: Room;
 
   @Column({ type: 'int', nullable: true })
   @IsInt()

@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
-import { Public } from '../auth/decorators/public.decorator';
+import { Public } from '../common/decorators/public.decorator';
 import { CountriesService } from './countries.service';
 import { CreateCountryDto } from './dto/create-country.dto';
 import { Country } from './entities/country.entity';
@@ -10,7 +10,7 @@ export class CountriesController {
 
   @Public()
   @Post()
-  async create(@Body() createCountryDto: CreateCountryDto): Promise<Country> {
+  async create(@Body() createCountryDto: CreateCountryDto): Promise<any> {
     return await this.countriesService.create(createCountryDto);
   }
 

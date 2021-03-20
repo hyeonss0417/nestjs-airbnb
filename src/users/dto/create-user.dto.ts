@@ -1,15 +1,21 @@
-import { IsEmail, IsString } from 'class-validator';
+import { PickType } from '@nestjs/mapped-types';
+import { IsBoolean, IsEmail, IsOptional, IsString } from 'class-validator';
+import { User } from '../entities/user.entity';
 
-export class CreateUserDto {
+export class CreateUserDto extends PickType(User, [
+  'firstName',
+  'lastName',
+  'email',
+  'password',
+]) {
+  @IsBoolean()
+  isHost: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  isAdmin?: boolean;
+
   @IsString()
-  firstName: string;
-
-  @IsString()
-  lastName: string;
-
-  @IsEmail()
-  email: string;
-
-  @IsString()
-  password: string;
+  @IsOptional()
+  adminSecretKey?: string;
 }

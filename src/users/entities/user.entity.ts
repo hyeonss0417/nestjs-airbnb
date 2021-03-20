@@ -30,7 +30,7 @@ export class User extends CoreEntity {
   lastName: string;
 
   @Column({ unique: true })
-  @IsEmail()
+  @IsEmail({}, { message: '올바른 이메일을 입력해주세요' })
   email: string;
 
   @Column({ select: false })
